@@ -1,25 +1,26 @@
 ﻿<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
-  <metadata>
-    <id>kli.Localize.Tool</id>
-    <version>0.1.20</version>
-    <title>kli.Localize</title>
-    <authors>mMilk</authors>
-    <owners>mMilk</owners>
-    <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <licenseUrl>https://licenses.nuget.org/MIT</licenseUrl>
-    <projectUrl>https://github.com/kl1mm/localize</projectUrl>
-    <description>Generates statically accessible code for * .json files that serve as a source for localization</description>
-    <releaseNotes>First prerelease - lets see how it works ;)</releaseNotes>
-    <copyright>mMilk</copyright>
-    <tags>localization, json</tags>      
-    <dependencies>
-      <group targetFramework=".NETCoreApp,Version=v3.1">
-      </group>
-    </dependencies>      
-  </metadata>
-  <files>
-    <file src="kli.Localize.Tool.targets" target="build/netcoreapp3.1/kli.Localize.Tool.targets" />
-    <file src="GenerateLocalizeCode.targets" target="tools/" />
-    <file src="$publishdir$\netcoreapp3.1\**\*" target="tools/" />
-  </files>
+    <metadata>
+        <id>kli.Localize.Tool</id>
+        <version>0.1.23</version>
+        <title>kli.Localize</title>
+        <authors>mMilk</authors>
+        <owners>mMilk</owners>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <licenseUrl>https://licenses.nuget.org/MIT</licenseUrl>
+        <projectUrl>https://github.com/kl1mm/localize</projectUrl>
+        <description>Generates statically accessible code for * .json files that serve as a source for localization</description>
+        <releaseNotes>First prerelease - lets see how it works ;)</releaseNotes>
+        <copyright>mMilk</copyright>
+        <tags>localization, json</tags>
+        <dependencies>
+            <group targetFramework=".NETStandard2.0">
+                <dependency id="System.Text.Json" version="4.7.1" exclude="Build,Analyzers" />
+            </group>
+        </dependencies>
+    </metadata>
+    <files>
+        <file src="kli.Localize.Tool.targets" target="build/netstandard2.0/kli.Localize.Tool.targets" />
+        <file src="GenerateLocalizeCode.targets" target="tools/" />
+        <file src="$publishdir$\netcoreapp3.1\**\*" target="tools/" />
+    </files>
 </package>
