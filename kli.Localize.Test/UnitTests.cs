@@ -15,6 +15,7 @@ namespace kli.Localizer.Tool.Test
         public void TestAccessGeneratedCode(string expected, string culture)
         {
             CultureInfo.CurrentUICulture = new CultureInfo(culture);
+          
             Assert.Equal(expected, Resources.Name);
             Assert.Equal("Wert", Resources.OnlyInGerman);
         }

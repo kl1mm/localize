@@ -29,10 +29,17 @@ Now, if everythings works fine and you can compile your solution you should get 
 
 ![alt text][generated]
 
-### Enjoy ;)
+##### Use it and enjoy ;)
+
+Now import the Namespace where you put your *.json files an use the generated code to access you localizations.
+
+![alt text][using]
+
+
 
 [csproj]:docs/csproj.png "Project file"
 [tree]:docs/tree.png "Filetree"
 [jsonfiles]: docs/jsonfiles.png "Json files with resources"
 [generated]: docs/generated.png "Generated source"
+[using]: docs/using.png "Use it"
 
