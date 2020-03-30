@@ -1,7 +1,7 @@
 ﻿<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>kli.Localize.Tool</id>
-    <version>0.1.19</version>
+    <version>0.1.20</version>
     <title>kli.Localize</title>
     <authors>mMilk</authors>
     <owners>mMilk</owners>

@@ -16,7 +16,7 @@ namespace kli.Localize.Tool.Internal
         {
             var translations = JsonSerializer.Deserialize<Translations>(File.ReadAllText(jsonFilePath));
             var className = Path.GetFileNameWithoutExtension(jsonFilePath);
-            var namespaceName = string.Join('.', Path.GetDirectoryName(jsonFilePath).Split(Path.PathSeparator).Prepend(rootNamespaceName));
+            var namespaceName = string.Join('.', Path.GetDirectoryName(jsonFilePath).Split(Path.PathSeparator).Prepend(rootNamespaceName)).TrimEnd('.');
 
             var classDeclaration = SyntaxFactory.ClassDeclaration(className)
                 .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
@@ -93,7 +93,7 @@ namespace kli.Localize.Tool.Internal
                             if (cultureInfo != CultureInfo.InvariantCulture)
                                 resourceName = resourceName.Replace("".json"", $""_{cultureInfo.Name}.json"");
 
-                            var assembly = typeof(Resources).Assembly;
+                            var assembly = typeof(" + className + @").Assembly;
                             if (assembly.GetManifestResourceNames().Any(n => n.Equals(resourceName)))
                             {
                                 using (Stream stream = assembly.GetManifestResourceStream(resourceName))

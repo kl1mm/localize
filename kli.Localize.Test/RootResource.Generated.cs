@@ -6,7 +6,7 @@
 //     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
-namespace kli.Localize.Test.Localization
+namespace kli.Localize.Test
 {
     using System;
     using System.Linq;
@@ -16,11 +16,10 @@ namespace kli.Localize.Test.Localization
     using System.Collections.Generic;
     using Translations = System.Collections.Generic.IDictionary<string, string>;
 
-    public class Resources
+    public class RootResource
     {
         private static readonly LocalizationProvider provider = new LocalizationProvider();
-        public static string OnlyInGerman => provider.GetValue(nameof(OnlyInGerman), CultureInfo.CurrentUICulture);
-        public static string Name => provider.GetValue(nameof(Name), CultureInfo.CurrentUICulture);
+        public static string TestKey => provider.GetValue(nameof(TestKey), CultureInfo.CurrentUICulture);
         private class LocalizationProvider
         {
             private static readonly IDictionary<CultureInfo, Translations> resources = new Dictionary<CultureInfo, Translations>();
@@ -60,10 +59,10 @@ namespace kli.Localize.Test.Localization
 
             private Translations LoadResource(CultureInfo cultureInfo)
             {
-                var resourceName = $"{typeof(Resources).FullName}.json";
+                var resourceName = $"{typeof(RootResource).FullName}.json";
                 if (cultureInfo != CultureInfo.InvariantCulture)
                     resourceName = resourceName.Replace(".json", $"_{cultureInfo.Name}.json");
-                var assembly = typeof(Resources).Assembly;
+                var assembly = typeof(RootResource).Assembly;
                 if (assembly.GetManifestResourceNames().Any(n => n.Equals(resourceName)))
                 {
                     using (Stream stream = assembly.GetManifestResourceStream(resourceName))
