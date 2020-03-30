@@ -350,3 +350,4 @@ styleguide/
 
 # jest test report
 test-report.xml
+/publish.ps1

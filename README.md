@@ -21,7 +21,7 @@ Just give the default language a name (e.g. Resources.json) all other languages 
 
 
 ##### Last but not least
-Insert an ItemGroup with `<Localize>Relative path to the json file</Localize>` in the project file (csproj) into which you have inserted your * .json file.
+Insert an ItemGroup with `<Localizable>Relative path to the json file</Localizable>` in the project file (csproj) into which you have inserted your * .json file.
 
 ![alt text][csproj]
 
