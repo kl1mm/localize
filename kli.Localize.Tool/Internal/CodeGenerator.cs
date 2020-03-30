@@ -20,7 +20,9 @@ namespace kli.Localize.Tool.Internal
 
             var classDeclaration = SyntaxFactory.ClassDeclaration(className)
                 .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
+                .AddModifiers(SyntaxFactory.Token(SyntaxKind.SealedKeyword))
                 .AddMembers(this.LocalizationProviderProperty())
+                .AddMembers(this.GetAllMethod())
                 .AddMembers(translations.Select(this.ProjectTranslationToMemberDeclaration).ToArray())
                 .AddMembers(this.CreateLocalizationProviderClass(className));
 
@@ -41,6 +43,9 @@ namespace kli.Localize.Tool.Internal
         private MemberDeclarationSyntax LocalizationProviderProperty()
             => SyntaxFactory.ParseMemberDeclaration("private static readonly LocalizationProvider provider = new LocalizationProvider();");
 
+        private MemberDeclarationSyntax GetAllMethod()
+            => SyntaxFactory.ParseMemberDeclaration("public static Translations GetAll() => provider.GetValues(CultureInfo.CurrentUICulture);");
+
         private MemberDeclarationSyntax ProjectTranslationToMemberDeclaration(KeyValuePair<string, string> translation)
             => SyntaxFactory.ParseMemberDeclaration($"public static string {translation.Key} => provider.GetValue(nameof({translation.Key}), CultureInfo.CurrentUICulture);");
 
@@ -52,12 +57,15 @@ namespace kli.Localize.Tool.Internal
                     {
                         private static readonly IDictionary<CultureInfo, Translations> resources = new Dictionary<CultureInfo, Translations>();
                     
-                        public string GetValue(string key, CultureInfo cultureInfo)
+                        internal string GetValue(string key, CultureInfo cultureInfo)
                         {
                             if (this.GetTranslations(cultureInfo).TryGetValue(key, out var value))
                                 return value;
                             return key;
                         }
+
+                        internal Translations GetValues(CultureInfo cultureInfo)
+                            => this.GetTranslations(cultureInfo);
 
                         private Translations GetTranslations(CultureInfo cultureInfo)
                         {
@@ -70,12 +78,7 @@ namespace kli.Localize.Tool.Internal
                         }
        
                         private Translations Load(CultureInfo cultureInfo)
-                        {
-                            return LoadResources(cultureInfo)
-                                .SelectMany(dict => dict)
-                                .ToLookup(pair => pair.Key, pair => pair.Value)
-                                .ToDictionary(group => group.Key, group => group.First());
-                        }
+                            => LoadResources(cultureInfo).SelectMany(dict => dict).ToLookup(pair => pair.Key, pair => pair.Value).ToDictionary(group => group.Key, group => group.First());
 
                         private IEnumerable<Translations> LoadResources(CultureInfo cultureInfo)
                         {
