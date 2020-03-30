@@ -6,7 +6,7 @@
 
     <ItemGroup>
         <Localizable Include="Localization\Resources.json" />
-        <Localizable Include="RootResource.json" />
+        <Localizable Include="RootResources.json" />
     </ItemGroup>
 
     <ItemGroup>
@@ -19,6 +19,12 @@
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="coverlet.collector" Version="1.2.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="RootResources.Generated.cs">
+        <DependentUpon>RootResources.json</DependentUpon>
+      </Compile>
     </ItemGroup>
 
 </Project>
