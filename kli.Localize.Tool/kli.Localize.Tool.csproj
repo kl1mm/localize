@@ -1,0 +1,40 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFrameworks>netcoreapp3.1</TargetFrameworks>
+        <OutputType>exe</OutputType>
+    </PropertyGroup>
+
+    <!-- Pack settings -->
+    <PropertyGroup>
+        <NoPackageAnalysis>true</NoPackageAnalysis>
+        <NuspecFile>kli.Localize.Tool.nuspec</NuspecFile>
+        <IntermediatePackDir>$(MSBuildProjectDirectory)/bin/$(Configuration)/publish/</IntermediatePackDir>
+        <PublishDir>$(IntermediatePackDir)$(TargetFramework)/</PublishDir>
+        <NuspecProperties>publishDir=$([MSBuild]::NormalizeDirectory($(IntermediatePackDir)))</NuspecProperties>
+    </PropertyGroup>
+
+    <Target Name="PublishAll" BeforeTargets="GenerateNuspec">
+        <ItemGroup>
+            <_TargetFramework Include="$(TargetFrameworks)" />
+        </ItemGroup>
+        <MSBuild Projects="$(MSBuildProjectFullPath)" Targets="Publish" Properties="TargetFramework=%(_TargetFramework.Identity)" />
+    </Target>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.5.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="GenerateLocalizeCode.targets">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="kli.Localize.Tool.nuspec">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="kli.Localize.Tool.targets">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
+</Project>

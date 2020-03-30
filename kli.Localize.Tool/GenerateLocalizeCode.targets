@@ -1,0 +1,24 @@
+﻿<!-- GenerateLocalizeCode.targets -->
+<Project>
+    <PropertyGroup>
+        <GeneratorTool>dotnet "$(MSBuildThisFileDirectory)kli.Localize.Tool.dll"</GeneratorTool>
+    </PropertyGroup>
+
+    <Target Name="GenerateLocalizeCode" BeforeTargets="BeforeBuild;BeforeRebuild">
+        <Exec Command="$(GeneratorTool) $(RootNamespace) %(Localizable.Identity)" />
+        <ItemGroup>
+            <LocalizableFiles Include="**\%(Localizable.Filename)*.json"></LocalizableFiles>
+        </ItemGroup>
+        <ItemGroup>
+            <EmbeddedResource Include="%(LocalizableFiles.Identity)" />
+        </ItemGroup>
+    </Target>
+
+    <ItemGroup>
+        <Compile Update="**\*.Generated.cs">
+            <AutoGen>True</AutoGen>
+            <DependentUpon>$([System.String]::Copy('%(Filename)').Replace('.Generated', '')).json</DependentUpon>
+        </Compile>
+    </ItemGroup>
+
+</Project>
