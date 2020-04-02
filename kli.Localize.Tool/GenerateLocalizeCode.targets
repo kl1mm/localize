@@ -15,9 +15,9 @@
     </Target>
 
     <ItemGroup>
-        <Compile Update="**\*.Generated.cs">
+        <Compile Update="**\*.g.cs">
             <AutoGen>True</AutoGen>
-            <DependentUpon>$([System.String]::Copy('%(Filename)').Replace('.Generated', '')).json</DependentUpon>
+            <DependentUpon>$([System.String]::Copy('%(Filename)').Replace('.g', '')).json</DependentUpon>
         </Compile>
     </ItemGroup>
 

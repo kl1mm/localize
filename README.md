@@ -25,7 +25,7 @@ Insert an ItemGroup with `<Localizable>Relative path to the json file</Localizab
 
 ![alt text][csproj]
 
-Now, if everythings works fine and you can compile your solution you should get a nested `<YourJsonFile>.Generated.cs` which you now can use in you code.
+Now, if everythings works fine and you can compile your solution you should get a nested `<YourJsonFile>.g.cs` which you now can use in you code.
 
 ![alt text][generated]
 

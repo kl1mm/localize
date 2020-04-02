@@ -18,7 +18,7 @@ namespace kli.Localize.Tool
 
         private static string GetOutputFileName(string sourceFile)
         {
-            var fileName = $"{Path.GetFileNameWithoutExtension(sourceFile)}.Generated.cs";
+            var fileName = $"{Path.GetFileNameWithoutExtension(sourceFile)}.g.cs";
             var basePath = Path.GetDirectoryName(sourceFile);
             return Path.Combine(basePath, fileName);
         }

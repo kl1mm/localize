@@ -44,7 +44,7 @@ namespace kli.Localize.Tool.Internal
             => SyntaxFactory.ParseMemberDeclaration("private static readonly LocalizationProvider provider = new LocalizationProvider();");
 
         private MemberDeclarationSyntax GetAllMethod()
-            => SyntaxFactory.ParseMemberDeclaration("public static Translations GetAll() => provider.GetValues(CultureInfo.CurrentUICulture);");
+            => SyntaxFactory.ParseMemberDeclaration("public static Translations GetAll(CultureInfo cultureInfo = null) => provider.GetValues(cultureInfo ?? CultureInfo.CurrentUICulture);");
 
         private MemberDeclarationSyntax ProjectTranslationToMemberDeclaration(KeyValuePair<string, string> translation)
             => SyntaxFactory.ParseMemberDeclaration($"public static string {translation.Key} => provider.GetValue(nameof({translation.Key}), CultureInfo.CurrentUICulture);");
