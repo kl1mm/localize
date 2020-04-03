@@ -23,6 +23,7 @@ namespace kli.Localize.Tool.Internal
                 .AddModifiers(SyntaxFactory.Token(SyntaxKind.SealedKeyword))
                 .AddMembers(this.LocalizationProviderProperty())
                 .AddMembers(this.GetAllMethod())
+                .AddMembers(this.GetStringMethod())
                 .AddMembers(translations.Select(this.ProjectTranslationToMemberDeclaration).ToArray())
                 .AddMembers(this.CreateLocalizationProviderClass(className));
 
@@ -45,6 +46,9 @@ namespace kli.Localize.Tool.Internal
 
         private MemberDeclarationSyntax GetAllMethod()
             => SyntaxFactory.ParseMemberDeclaration("public static Translations GetAll(CultureInfo cultureInfo = null) => provider.GetValues(cultureInfo ?? CultureInfo.CurrentUICulture);");
+
+        private MemberDeclarationSyntax GetStringMethod()
+            => SyntaxFactory.ParseMemberDeclaration("public static string GetString(string key, CultureInfo cultureInfo = null) => provider.GetValue(key, cultureInfo ?? CultureInfo.CurrentUICulture);");
 
         private MemberDeclarationSyntax ProjectTranslationToMemberDeclaration(KeyValuePair<string, string> translation)
             => SyntaxFactory.ParseMemberDeclaration($"public static string {translation.Key} => provider.GetValue(nameof({translation.Key}), CultureInfo.CurrentUICulture);");
