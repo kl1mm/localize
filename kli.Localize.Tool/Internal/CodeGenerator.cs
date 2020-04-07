@@ -35,6 +35,7 @@ namespace kli.Localize.Tool.Internal
                 .AddUsings(SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("System.IO")))
                 .AddUsings(SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("System.Globalization")))
                 .AddUsings(SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("System.Collections.Generic")))
+                .AddUsings(SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("System.Collections.Concurrent")))
                 .AddUsings(SyntaxFactory.UsingDirective(SyntaxFactory.NameEquals(SyntaxFactory.IdentifierName("Translations")), SyntaxFactory.ParseName("System.Collections.Generic.IDictionary<string, string>")))
                 .AddMembers(classDeclaration)
                 .NormalizeWhitespace()
@@ -59,7 +60,7 @@ namespace kli.Localize.Tool.Internal
                 @"
                     private class LocalizationProvider 
                     {
-                        private static readonly IDictionary<CultureInfo, Translations> resources = new Dictionary<CultureInfo, Translations>();
+                        private static readonly ConcurrentDictionary<CultureInfo, Translations> resources = new ConcurrentDictionary<CultureInfo, Translations>();
                     
                         internal string GetValue(string key, CultureInfo cultureInfo)
                         {
@@ -71,15 +72,7 @@ namespace kli.Localize.Tool.Internal
                         internal Translations GetValues(CultureInfo cultureInfo)
                             => this.GetTranslations(cultureInfo);
 
-                        private Translations GetTranslations(CultureInfo cultureInfo)
-                        {
-                            if (!resources.TryGetValue(cultureInfo, out var translations))
-                            {
-                                translations = Load(cultureInfo);
-                                resources.Add(cultureInfo, translations);
-                            }
-                            return translations;
-                        }
+                        private Translations GetTranslations(CultureInfo cultureInfo) => resources.GetOrAdd(cultureInfo, key => Load(cultureInfo));
        
                         private Translations Load(CultureInfo cultureInfo)
                             => LoadResources(cultureInfo).SelectMany(dict => dict).ToLookup(pair => pair.Key, pair => pair.Value).ToDictionary(group => group.Key, group => group.First());
