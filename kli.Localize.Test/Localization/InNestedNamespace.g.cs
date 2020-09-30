@@ -14,17 +14,27 @@ namespace kli.Localize.Test.Localization
     using System.IO;
     using System.Globalization;
     using System.Collections.Generic;
+    using System.Collections.Concurrent;
     using Translations = System.Collections.Generic.IDictionary<string, string>;
 
     public sealed class InNestedNamespace
     {
         private static readonly LocalizationProvider provider = new LocalizationProvider();
         public static Translations GetAll(CultureInfo cultureInfo = null) => provider.GetValues(cultureInfo ?? CultureInfo.CurrentUICulture);
+        public static string GetString(string key, CultureInfo cultureInfo = null) => provider.GetValue(key, cultureInfo ?? CultureInfo.CurrentUICulture);
+        
+        /// <summary>
+        ///  Looks up a localized string similar to: "Wert"
+        /// </summary>
         public static string OnlyInGerman => provider.GetValue(nameof(OnlyInGerman), CultureInfo.CurrentUICulture);
+        
+        /// <summary>
+        ///  Looks up a localized string similar to: "German"
+        /// </summary>
         public static string Name => provider.GetValue(nameof(Name), CultureInfo.CurrentUICulture);
         private class LocalizationProvider
         {
-            private static readonly IDictionary<CultureInfo, Translations> resources = new Dictionary<CultureInfo, Translations>();
+            private static readonly ConcurrentDictionary<CultureInfo, Translations> resources = new ConcurrentDictionary<CultureInfo, Translations>();
             internal string GetValue(string key, CultureInfo cultureInfo)
             {
                 if (this.GetTranslations(cultureInfo).TryGetValue(key, out var value))
@@ -33,17 +43,7 @@ namespace kli.Localize.Test.Localization
             }
 
             internal Translations GetValues(CultureInfo cultureInfo) => this.GetTranslations(cultureInfo);
-            private Translations GetTranslations(CultureInfo cultureInfo)
-            {
-                if (!resources.TryGetValue(cultureInfo, out var translations))
-                {
-                    translations = Load(cultureInfo);
-                    resources.Add(cultureInfo, translations);
-                }
-
-                return translations;
-            }
-
+            private Translations GetTranslations(CultureInfo cultureInfo) => resources.GetOrAdd(cultureInfo, key => Load(cultureInfo));
             private Translations Load(CultureInfo cultureInfo) => LoadResources(cultureInfo).SelectMany(dict => dict).ToLookup(pair => pair.Key, pair => pair.Value).ToDictionary(group => group.Key, group => group.First());
             private IEnumerable<Translations> LoadResources(CultureInfo cultureInfo)
             {
