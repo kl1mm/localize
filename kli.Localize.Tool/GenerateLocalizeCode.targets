@@ -1,7 +1,7 @@
 ﻿<!-- GenerateLocalizeCode.targets -->
 <Project>
     <PropertyGroup>
-        <GeneratorTool>dotnet "$(MSBuildThisFileDirectory)kli.Localize.Tool.dll"</GeneratorTool>
+        <GeneratorTool>dotnet "$(MSBuildThisFileDirectory)$(TargetFramework)/kli.Localize.Tool.dll"</GeneratorTool>
     </PropertyGroup>
 
     <Target Name="GenerateLocalizeCode" BeforeTargets="BeforeBuild;BeforeRebuild">

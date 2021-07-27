@@ -10,7 +10,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="kli.Localize.Tool" Version="0.4.0" />
+        <PackageReference Include="kli.Localize.Tool" Version="0.4.4" />
         <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="5.0.0-rc.1.20451.17" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.7.1" />
         <PackageReference Include="xunit" Version="2.4.1" />
@@ -22,6 +22,10 @@
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Localization\" />
     </ItemGroup>
 
 </Project>

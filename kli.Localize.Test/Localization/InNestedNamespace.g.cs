@@ -22,15 +22,7 @@ namespace kli.Localize.Test.Localization
         private static readonly LocalizationProvider provider = new LocalizationProvider();
         public static Translations GetAll(CultureInfo cultureInfo = null) => provider.GetValues(cultureInfo ?? CultureInfo.CurrentUICulture);
         public static string GetString(string key, CultureInfo cultureInfo = null) => provider.GetValue(key, cultureInfo ?? CultureInfo.CurrentUICulture);
-        
-        /// <summary>
-        ///  Looks up a localized string similar to: "Wert"
-        /// </summary>
         public static string OnlyInGerman => provider.GetValue(nameof(OnlyInGerman), CultureInfo.CurrentUICulture);
-        
-        /// <summary>
-        ///  Looks up a localized string similar to: "German"
-        /// </summary>
         public static string Name => provider.GetValue(nameof(Name), CultureInfo.CurrentUICulture);
         private class LocalizationProvider
         {

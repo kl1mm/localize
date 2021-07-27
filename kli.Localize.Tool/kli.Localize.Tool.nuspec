@@ -1,7 +1,7 @@
 ﻿<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
     <metadata>
         <id>kli.Localize.Tool</id>
-        <version>0.4.1</version>
+        <version>0.4.4</version>
         <title>kli.Localize</title>
         <authors>mMilk</authors>
         <owners>mMilk</owners>
@@ -10,7 +10,7 @@
         <projectUrl>https://github.com/kl1mm/localize</projectUrl>
         <description>Generates statically accessible code for * .json files that serve as a source for localization</description>
         <releaseNotes>
-            0.4.1
+            0.4.2
             - first Support for .NET6.0 (Preview)
             0.3.0
             - added comments for generated properties
@@ -31,7 +31,7 @@
     <files>
         <file src="kli.Localize.Tool.targets" target="build/netstandard2.0/kli.Localize.Tool.targets" />
         <!--<file src="GenerateLocalizeCode.targets" target="tools/net5.0/" />-->
-        <!--<file src="GenerateLocalizeCode.targets" target="tools/net6.0/" />-->
+        <file src="GenerateLocalizeCode.targets" target="tools/" />
         <file src="$publishdir$\net5.0\**\*" target="tools/net5.0/" />
         <file src="$publishdir$\net6.0\**\*" target="tools/net6.0/" />
     </files>
