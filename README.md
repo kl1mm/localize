@@ -1,45 +1,41 @@
 ﻿# localize
+Simple package with which json files can be used to localize text via static source code access.
 
-Simple tool to enable localization with json files as source.
+Implemented via [C# source generators](https://docs.microsoft.com/en-us/dotnet/csharp/roslyn-sdk/source-generators-overview)
 
-## To start using kli.Localize.Tool
+## install the nuget package
+Add the following Nuget package reference to the project file in which you want to localize:<br>
 
-#### First install the nuget package 
-`<PackageReference Include="kli.Localize.Tool" Version="<version>" />`
+`<PackageReference Include="kli.Localize" Version="<version>" />`
 
-#### Next create your *.json files where u put your localizations
+## create your own *.json files where you want to put your localized texts.
 ```json
 {
-    "OnlyInGerman": "Wert",
-    "Name": "German"
+    "SampleText": "FooBar",
+    "Other": "Text42"
 }
 ```
-Just give your default language a name **without** specifying the culture (e.g. Resources.json) all other languages follow the pattern `<Filename>_<CultureInfo.Name>.json` (e.g. Resources_en-US.json for American or Resources_en.json for English)
+Just give your default language a name **without** specifying the culture (e.g. Locale.json) all other languages follow the pattern `<Filename>_<CultureInfo.Name>.json` (e.g. Locale_en-US.json for American English or Locale_en.json for English)
 
-![alt text][tree]
-![alt text][jsonfiles]
+![locale_files image][locale_files]
 
+## add json files to csproj
+Add an `ItemGroup` to your projectfile (csproj). Foreach json file add an `AdditionFiles`-Element with the `Include` attribute set to the path of the file.
 
-#### Last but not least
-Insert an ItemGroup with `<Localizable>Relative path to the json file</Localizable>` in the project file (csproj) into which you have inserted your * .json file.
+![csproj image][csproj]
 
-![alt text][csproj]
+## use it
+Now, if everythings works fine you should be able to locate the generated source code in you Solution-Explorer under Dependencies/Analysers.<br>
+Of course you can also view and even debug the generated source code.<br>
+![generated_2 image][generated_2]
+![generated_1 image][generated_1]
+<br>
 
-Now, if everythings works fine and you can compile your solution you should get a nested `<YourJsonFile>.g.cs` which you now can use in you code.
+Import the namespace where you put your *.json files an use the generated code to access your localizations.<br><br>
+![useit image][useit]
 
-![alt text][generated]
-
-#### Use it and enjoy ;)
-
-Now import the Namespace where you put your *.json files an use the generated code to access your localizations.
-
-![alt text][using]
-
-
-
-[csproj]:docs/csproj.png "Project file"
-[tree]:docs/tree.png "Filetree"
-[jsonfiles]: docs/jsonfiles.png "Json files with resources"
-[generated]: docs/generated.png "Generated source"
-[using]: docs/using.png "Use it"
-
+[locale_files]: docs/locale_files.png
+[csproj]: docs/csproj.png
+[generated_1]: docs/generated_1.png
+[generated_2]: docs/generated_2.png
+[useit]: docs/useit.png

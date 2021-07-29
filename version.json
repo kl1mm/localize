@@ -1,0 +1,15 @@
+﻿{
+    "version": "0.5",
+    "cloudBuild": {
+        "buildNumber": {
+            "enabled": true,
+            "includeCommitId": {
+                "when": "nonPublicReleaseOnly",
+                "where": "buildMetadata"
+            }
+        }
+    },
+    "publicReleaseRefSpec": [
+        "^refs/heads/main$"
+    ]
+}

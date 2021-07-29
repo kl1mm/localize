@@ -1,27 +1,19 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29920.165
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31521.260
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "kli.Localize.Tool", "kli.Localize.Tool\kli.Localize.Tool.csproj", "{50E41957-D5D2-4ECE-86F9-E3D06E2E7C0B}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "kli.Localize.Test", "kli.Localize.Test\kli.Localize.Test.csproj", "{E4B58196-7DC5-46AB-B04E-F5E286E55725}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "kli.Localize.Test", "src\kli.Localize.Test\kli.Localize.Test.csproj", "{E4B58196-7DC5-46AB-B04E-F5E286E55725}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{983F8842-3AA6-4D12-86E3-1426E0D9655A}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
-		publish.ps1 = publish.ps1
 		README.md = README.md
+		version.json = version.json
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{43C324D9-A5CB-4A40-BAFB-9770314A2A53}"
-	ProjectSection(SolutionItems) = preProject
-		docs\csproj.png = docs\csproj.png
-		docs\jsonfiles.png = docs\jsonfiles.png
-		docs\tree.png = docs\tree.png
-		docs\using.png = docs\using.png
-	EndProjectSection
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "kli.Localize.Generator", "src\kli.Localize.Generator\kli.Localize.Generator.csproj", "{A4874D9E-1B9D-486B-9C77-3A75A8FAD6F9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,20 +21,17 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{50E41957-D5D2-4ECE-86F9-E3D06E2E7C0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{50E41957-D5D2-4ECE-86F9-E3D06E2E7C0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{50E41957-D5D2-4ECE-86F9-E3D06E2E7C0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{50E41957-D5D2-4ECE-86F9-E3D06E2E7C0B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E4B58196-7DC5-46AB-B04E-F5E286E55725}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E4B58196-7DC5-46AB-B04E-F5E286E55725}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E4B58196-7DC5-46AB-B04E-F5E286E55725}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E4B58196-7DC5-46AB-B04E-F5E286E55725}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A4874D9E-1B9D-486B-9C77-3A75A8FAD6F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4874D9E-1B9D-486B-9C77-3A75A8FAD6F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4874D9E-1B9D-486B-9C77-3A75A8FAD6F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4874D9E-1B9D-486B-9C77-3A75A8FAD6F9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{43C324D9-A5CB-4A40-BAFB-9770314A2A53} = {983F8842-3AA6-4D12-86E3-1426E0D9655A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6617299E-3B0B-4F1A-949F-267D55B2C833}
