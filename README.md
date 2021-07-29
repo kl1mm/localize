@@ -20,7 +20,7 @@ Just give your default language a name **without** specifying the culture (e.g. 
 ![locale_files image][locale_files]
 
 ## add json files to csproj
-Add an `ItemGroup` to your projectfile (csproj). Foreach json file add an `AdditionFiles`-Element with the `Include` attribute set to the path of the file.
+Add an `ItemGroup` to your project file (csproj). Foreach json file add an `AdditionFiles`-Element with the `Include` attribute set to the path of the file.
 
 ![csproj image][csproj]
 

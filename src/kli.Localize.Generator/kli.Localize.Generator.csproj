@@ -38,7 +38,7 @@
 
     <ItemGroup>
         <!--<None Include="..\icon.png" Pack="true" PackagePath="icon.png" />-->
-        <None Include="..\README.md" Pack="true" PackagePath="README.md" />
+        <None Include="..\..\README.md" Pack="true" PackagePath="README.md" />
     </ItemGroup>
 
     <PropertyGroup>
