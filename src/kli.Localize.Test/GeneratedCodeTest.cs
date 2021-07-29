@@ -1,12 +1,12 @@
 ﻿using System.Globalization;
-using Xunit;
 using kli.Localize.Test.TestLocalizations;
+using Xunit;
 
 namespace kli.Localize.Test
 {
-    public class UnitTests
+    public class GeneratedCodeTest
     {
-        public UnitTests()
+        public GeneratedCodeTest()
         {
             CultureInfo.CurrentUICulture = new CultureInfo("de-DE");
         }
@@ -23,7 +23,7 @@ namespace kli.Localize.Test
         {
             CultureInfo.CurrentUICulture = new CultureInfo(culture);
             Assert.Equal(expected, Locale.TestKey);
-            Assert.Equal("Nür hiär", Locale.OnlyHere);
+            Assert.Equal("Nür hiär", Locale.OnlyHere); 
         }
 
         [Fact]
@@ -44,9 +44,9 @@ namespace kli.Localize.Test
         [Fact]
         public void TestGetAll()
         {
-            Assert.Equal(3, Locale.GetAll().Count);
+            Assert.Equal(6, Locale.GetAll().Count);
             Assert.Equal(1, Locale.GetAll(new CultureInfo("en-US")).Count);
-            Assert.Equal(3, Locale.GetAll(new CultureInfo("fr")).Count);
+            Assert.Equal(6, Locale.GetAll(new CultureInfo("fr")).Count);
         }
     }
 }
