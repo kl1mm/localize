@@ -5,6 +5,7 @@
         <LangVersion>9.0</LangVersion>
         <IncludeBuildOutput>false</IncludeBuildOutput>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -21,6 +22,7 @@
         <PackageTags>localization, json</PackageTags>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <!-- <PackageIcon>icon.png</PackageIcon> -->
+        
     </PropertyGroup>
 
     <ItemGroup>
