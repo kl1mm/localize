@@ -49,14 +49,22 @@ jobs:
       with:
         name: kli.Localize.${{ needs.build.outputs.tag }}.nupkg
         path: artifacts
-    - name: Create github release
-      uses: "marvinpinto/action-automatic-releases@latest"
+
+    - name: Generate changelog
+      id: changelog
+      uses: jaywcjlove/changelog-generator@main
       with:
-        repo_token: "${{ secrets.GITHUB_TOKEN }}"
-        prerelease: false
-        automatic_release_tag: "${{ needs.build.outputs.tag }}"
-        files: |
-          artifacts/*.nupkg
+        token: ${{ secrets.GITHUB_TOKEN }}
+ 
+    - name: Create release
+      uses: ncipollo/release-action@v1
+      with:
+       artifacts: "artifacts/*.nupkg"
+       body: |
+        ${{ steps.changelog.outputs.changelog }}
+       token: ${{ secrets.GITHUB_TOKEN }}        
+       tag: "${{ needs.build.outputs.tag }}"
+          
     - name: Publish the package to nuget.org
       run: dotnet nuget push artifacts/*.nupkg -k $NUGET_AUTH_TOKEN -s https://api.nuget.org/v3/index.json
     env:
