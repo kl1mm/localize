@@ -37,11 +37,11 @@ namespace kli.Localize.Generator.Internal
                         match?.lineNumber ?? 0);
                 }
 
-                return validTranslations.ToDictionary(t => t.Key, t => JsonConvert.ToString(t.Value));
+                return validTranslations.ToDictionary(t => t.Key, t => t.Value);
             }
             catch (JsonReaderException ex)
             {
-                throw new JsonException($"Failed to parse json: '{filePath}'. Only string values are allowed. InnerException: '{ex.Message}'", ex);
+                throw new FormatException($"Failed to parse json: '{filePath}'. Only string values are allowed. InnerException: '{ex.Message}'", ex);
             }
         }
 

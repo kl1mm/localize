@@ -5,6 +5,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
+using Newtonsoft.Json;
 
 namespace kli.Localize.Generator.Internal
 {
@@ -110,7 +111,7 @@ namespace kli.Localize.Generator.Internal
         private MemberDeclarationSyntax GetTranslationDictionaryFieldDeclaration(CultureData ctx)
         {
             var translations = this.translationReader.Read(ctx.FilePath);
-            var entries = translations.Select(t => $"{{ \"{t.Key}\", {t.Value} }},");
+            var entries = translations.Select(t => $"{{ \"{t.Key}\", {JsonConvert.ToString(t.Value)} }},");
             var source = $@"private static readonly Translations {ctx.Normalized} = new()
                             {{
                                 {string.Join("\r\n", entries)}
