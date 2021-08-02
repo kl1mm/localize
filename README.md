@@ -1,5 +1,6 @@
 ﻿# Localize
-Simple package to localize **strings** via static source code generation from json files.
+
+Simple package to localize **strings** from json files via static source code generation.
 
 Implemented via [C# source generators](https://docs.microsoft.com/en-us/dotnet/csharp/roslyn-sdk/source-generators-overview)
 
@@ -7,32 +8,40 @@ Implemented via [C# source generators](https://docs.microsoft.com/en-us/dotnet/c
 
 ## Usage
 
-[**See example project**](https://github.com/kl1mm/localize/tree/develop/example/kli.Localize.Example)
+_Also see [**example project**](https://github.com/kl1mm/localize/tree/develop/example/kli.Localize.Example)_
 
 ### Install the nuget package
-Add the following [Nuget package reference](https://www.nuget.org/packages/kli.Localize/) to the project file in the project you want to localize:<br>
+
+Add a [Nuget package](https://www.nuget.org/packages/kli.Localize/) reference to the project file in the project you want to localize:<br>
 
 `<PackageReference Include="kli.Localize" Version="<version>" />`
 
-### Create *.json files for your localized texts.
+### Create \*.json files for your localized texts.
+
+Example:
+
 ```json
 {
     "SampleText": "FooBar",
     "Other": "Text42"
 }
 ```
-Just give your default language a name **without** specifying the culture (e.g. `Locale.json`). All other languages follow the pattern `<Filename>_<CultureInfo.Name>.json` (e.g. `Locale_en-US.json` for American English or `Locale_en.json` for English)
+
+Give your default localization a name **without** specifying the culture (e.g. `Locale.json`). All other localizations follow the pattern `<Filename>_<CultureInfo.Name>.json` (e.g. `Locale_en-US.json` for American English or `Locale_en.json` for English)
 
 ![locale_files image][locale_files]
 
 ### Add json files to csproj
-Add an `ItemGroup` to your project file (csproj). Foreach json file add an `AdditionFiles`-Element with the `Include` attribute set to the path of the file.
+
+In an `ItemGroup` in your csproj file add add an `AdditionFiles` element for **each default localization** json file. Set the `Include` attribute to the path of the file.
+
+Example:
 
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
 
     <ItemGroup>
-        <PackageReference Include="kli.Localize" Version="0.6.*" />
+        <PackageReference Include="kli.Localize" Version="0.7.*" />
 
         <AdditionalFiles Include="TestLocalizations\Locale.json" />
     </ItemGroup>
@@ -40,9 +49,15 @@ Add an `ItemGroup` to your project file (csproj). Foreach json file add an `Addi
 </Project>
 ```
 
-### Use it
-Now, if everythings works fine you should be able to locate the generated source code in you Solution-Explorer under Dependencies/Analysers.<br>
-Of course you can also view and even debug the generated source code.<br>
+This means: if you have a `Locale.json` and a `Locale_en-US.json` you **only** have to add the `Locale.json` as `<AdditionalFiles>`. You can add as many files as you want.
+
+### Use it in your code
+
+Now you should be able to locate the generated source code in your project under Dependencies/Analyzers.<br>
+_Of course you can also view and debug the generated source code._<br>
+
+![generated_1 image][generated_1]
+<br>
 
 <details>
   <summary>Generated code example</summary>
@@ -124,19 +139,29 @@ namespace kli.Localize.Example.Localizations
     }
 }
 ```
+
 </details>
 
 <br>
 
-![generated_1 image][generated_1]
-<br>
-
-Import the namespace where you put your *.json files an use the generated code to access your localizations.<br><br>
+Import the namespace where you put your \*.json files and use the generated code to access your localizations.<br>
+Access is based on [CultureInfo.CurrentUICulture](https://docs.microsoft.com/en-us/dotnet/api/system.globalization.cultureinfo.currentuiculture)
+<br><br>
 ![useit image][useit]
 
+### Namespace generation
 
-## Why is no code generated?
+The namespace is generated using the following pattern:<br>
+`rootnamespace + relative directory structure`
+<br>
+
+## Help! Why is no code generated?
+
 Directly after including the package sometimes the tooling (Visual Studio) gets stuck. If you encounter any problems with source generation try to restart Visual Studio and/or check the build log for warnings/errors.
+
+## Need help? Problems?
+
+Feel free to create an [Issue](https://github.com/kl1mm/localize/issues)
 
 [locale_files]: docs/locale_files.png
 [generated_1]: docs/generated_1.png
