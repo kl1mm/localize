@@ -13,12 +13,13 @@ namespace kli.Localize.Generator
 
         public void Execute(GeneratorExecutionContext context)
         {
-//#if DEBUG
-//            if (!System.Diagnostics.Debugger.IsAttached)
-//                System.Diagnostics.Debugger.Launch();
-//#endif
+            //#if DEBUG
+            //            if (!System.Diagnostics.Debugger.IsAttached)
+            //                System.Diagnostics.Debugger.Launch();
+            //#endif
 
-            var codeGenerator = new LocalizeCodeGeneratorCore(context.ReportDiagnostic);
+            var translationReader = new TranslationReader(context.ReportDiagnostic);
+            var codeGenerator = new LocalizeCodeGeneratorCore(translationReader);
             foreach (var file in context.AdditionalFiles)
             {
                 var ctx = new GeneratorDataContext(context, file);
