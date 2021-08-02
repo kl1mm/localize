@@ -16,13 +16,12 @@
         <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
         <RepositoryType>Git</RepositoryType>
         <RepositoryUrl>https://github.com/kl1mm/localize</RepositoryUrl>
-        <Description>Generates statically accessible code for .json files that serve as a source for localization (C# Source Generators)</Description>
+        <Description>Localize strings from json files via static source code generation (C# Source Generators)</Description>
         <Copyright>Copyright © $(Authors) 2020-$([System.DateTime]::Now.Year)</Copyright>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageTags>localization, json</PackageTags>
         <PackageReadmeFile>README.md</PackageReadmeFile>
-        <!-- <PackageIcon>icon.png</PackageIcon> -->
-        
+        <PackageIcon>icon.png</PackageIcon>
     </PropertyGroup>
 
     <ItemGroup>
@@ -39,7 +38,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <!--<None Include="..\icon.png" Pack="true" PackagePath="icon.png" />-->
+        <None Include="..\..\icon.png" Pack="true" PackagePath="icon.png" />
         <None Include="..\..\README.md" Pack="true" PackagePath="README.md" />
     </ItemGroup>
 
