@@ -13,13 +13,13 @@ namespace kli.Localize.Generator.Internal
         public string GeneratedFileName { get; set; }
         public string GeneratedClassName { get; set; }
 
-        public GeneratorDataContext(GeneratorExecutionContext context, AdditionalText originFile)
+        public GeneratorDataContext(AdditionalText originFile, NamespaceResolver namespaceResolver)
         {
             this.OriginFilePath = originFile.Path;
-            this.Namespace = this.ResolveNamespace(context, originFile);
             this.CultureData = this.ResolveCultureFiles(originFile);
             this.GeneratedClassName = Path.GetFileNameWithoutExtension(originFile.Path);
             this.GeneratedFileName = $"{this.GeneratedClassName}.g.cs";
+            this.Namespace = namespaceResolver.Resolve();
         }
 
         private IReadOnlyList<CultureData> ResolveCultureFiles(AdditionalText originFile)
@@ -28,22 +28,6 @@ namespace kli.Localize.Generator.Internal
             var fileName = Path.GetFileNameWithoutExtension(originFile.Path);
             return Directory.GetFiles(searchDir, $"{fileName}*{Path.GetExtension(originFile.Path)}")
                 .Select(Internal.CultureData.Initialize).ToList();
-        }
-
-        private string ResolveNamespace(GeneratorExecutionContext context, AdditionalText originFile)
-        {
-            if (!context.AnalyzerConfigOptions.GlobalOptions.TryGetValue("build_property.rootnamespace", out var rootNamespace))
-                rootNamespace = context.Compilation.AssemblyName;
-
-            var namespaceName = rootNamespace;
-            if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue("build_property.projectdir", out var projectDir))
-            {
-                namespaceName = Path.GetDirectoryName(originFile.Path)
-                   .Replace(projectDir.TrimEnd(Path.DirectorySeparatorChar), rootNamespace)
-                   .Replace(Path.DirectorySeparatorChar, '.');
-            }
-
-            return namespaceName;
         }
     }
 }
