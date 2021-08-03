@@ -22,7 +22,10 @@ namespace kli.Localize.Generator
             var codeGenerator = new LocalizeCodeGeneratorCore(translationReader);
             foreach (var file in context.AdditionalFiles)
             {
-                var ctx = new GeneratorDataContext(context, file);
+                var namespaceResolver = new NamespaceResolver(file.Path, context.Compilation.AssemblyName, 
+                    context.AnalyzerConfigOptions.GlobalOptions.TryGetValue);
+
+                var ctx = new GeneratorDataContext(file, namespaceResolver);
                 context.AddSource(ctx.GeneratedFileName, codeGenerator.CreateClass(ctx));
             }
         }
