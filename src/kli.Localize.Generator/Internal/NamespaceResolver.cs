@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace kli.Localize.Generator.Internal
 {
@@ -22,15 +23,26 @@ namespace kli.Localize.Generator.Internal
             if (!this.optionsTryGetFunc("build_property.rootnamespace", out var rootNamespace))
                 rootNamespace = fallBackRootNamespace;
 
-            var namespaceName = rootNamespace;
             if (this.optionsTryGetFunc("build_property.projectdir", out var projectDir))
             {
-                namespaceName = Path.GetDirectoryName(originFilePath)
-                   .Replace(projectDir.TrimEnd(Path.DirectorySeparatorChar), rootNamespace)
-                   .Replace(Path.DirectorySeparatorChar, '.');
+                var fromPath = this.EnsurePathEndsWithDirectorySeparator(projectDir);
+                var toPath = Path.GetDirectoryName(this.originFilePath);
+                var relativPath = this.GetRelativePath(fromPath, toPath);
+
+                return $"{rootNamespace}.{relativPath.Replace(Path.DirectorySeparatorChar, '.')}";
             }
 
-            return namespaceName;
+            return rootNamespace;
         }
+
+        private string GetRelativePath(string fromPath, string toPath)
+        {
+            var relativeUri = new Uri(fromPath).MakeRelativeUri(new(toPath));
+            return Uri.UnescapeDataString(relativeUri.ToString())
+                .Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+        }
+
+        private string EnsurePathEndsWithDirectorySeparator(string path) 
+            => path.TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
     }
 }

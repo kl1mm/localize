@@ -6,7 +6,7 @@ namespace kli.Localize.Test
 {
     public class NamespaceResolverTest
     {
-        private const string originFilePath = @"C:\_git\SLN\Project\Folder\File.json";
+        private const string originFilePath = @"C:\_git\SLN\Project.Name\Folder\File.json";
         private const string fallback = "kli.Fall";
 
         [Fact]
@@ -15,7 +15,7 @@ namespace kli.Localize.Test
             var options = new Dictionary<string, string>
             {
                 { "build_property.rootnamespace", "kli.Spring" },
-                { "build_property.projectdir", @"C:\_git\SLN\Project\" },
+                { "build_property.projectdir", @"C:\_git\SLN\Project.Name\" },
             };
 
             var resolver = new NamespaceResolver(originFilePath, fallback, options.TryGetValue);
@@ -29,7 +29,7 @@ namespace kli.Localize.Test
             var options = new Dictionary<string, string>
             {
                 { "build_property.rootnamespace", "kli.Spring" },
-                { "build_property.projectdir", @"C:\_git\SLN\Project" },
+                { "build_property.projectdir", @"C:\_git\SLN\Project.Name" },
             };
 
             var resolver = new NamespaceResolver(originFilePath, fallback, options.TryGetValue);
@@ -42,7 +42,7 @@ namespace kli.Localize.Test
             var options = new Dictionary<string, string>
             {
                 { "build_property.rootnamespace", "kli.Spring" },
-                { "build_property.projectdir", @"c:\_git\SLN\Project\" },
+                { "build_property.projectdir", @"c:\_git\SLN\Project.Name\" },
             };
 
             var resolver = new NamespaceResolver(originFilePath, fallback, options.TryGetValue);
@@ -66,7 +66,7 @@ namespace kli.Localize.Test
         {
             var options = new Dictionary<string, string>
             {
-                { "build_property.projectdir", @"C:\_git\SLN\Project\" },
+                { "build_property.projectdir", @"C:\_git\SLN\Project.Name\" },
             };
 
             var resolver = new NamespaceResolver(originFilePath, fallback, options.TryGetValue);
