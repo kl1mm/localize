@@ -40,11 +40,11 @@ namespace kli.Localize.Test
             var filePath = Path.GetRandomFileName();
             try
             {
-                File.WriteAllText(filePath, "{\"1\": \"One\", \" \": \"Blank\"}");
+                File.WriteAllText(filePath, "{\"Foo\": \"One\", \"1\": \"One\", \" \": \"Blank\"}");
 
                 var reader = new TranslationReader(reporterMock.Object);
 
-                Assert.Empty(reader.Read(Path.Combine(filePath)));
+                Assert.Single(reader.Read(Path.Combine(filePath)));
                 reporterMock.Verify(m => m(It.IsAny<Diagnostic>()), Times.Exactly(2));
             }
             finally
