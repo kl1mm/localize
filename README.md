@@ -33,7 +33,7 @@ Give your default localization a name **without** specifying the culture (e.g. `
 
 ### Add json files to csproj
 
-In an `ItemGroup` in your csproj file add add an `AdditionFiles` element for **each default localization** json file. Set the `Include` attribute to the path of the file.
+In an `ItemGroup` in your csproj file add an `AdditionFiles` element for **each default localization** json file. Set the `Include` attribute to the path of the file.
 
 Example:
 
