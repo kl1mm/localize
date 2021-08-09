@@ -83,7 +83,7 @@ namespace kli.Localize.Example.Localizations
         private static readonly LocalizationProvider provider = new LocalizationProvider();
         public static IDictionary<string, string> GetAll(CultureInfo cultureInfo = null) => provider.GetValues(cultureInfo ?? CultureInfo.CurrentUICulture);
         public static string GetString(string key, CultureInfo cultureInfo = null) => provider.GetValue(key, cultureInfo ?? CultureInfo.CurrentUICulture);
-        ///<summary>Similar to: "Hallo Welt (German)"</summary>
+        ///<summary>Similar to: Hallo Welt (German)</summary>
         public static string MyText => provider.GetValue(nameof(MyText), CultureInfo.CurrentUICulture);
         private class LocalizationProvider
         {
@@ -114,19 +114,13 @@ namespace kli.Localize.Example.Localizations
 
             private T TraverseCultures<T>(CultureInfo cultureInfo, SelectorFunc<T> selectorFunc)
             {
-                while (cultureInfo != CultureInfo.InvariantCulture)
+                if (resources.TryGetValue(cultureInfo, out Translations translations))
                 {
-                    if (resources.TryGetValue(cultureInfo, out Translations translations))
-                    {
-                        if (selectorFunc(translations, out T result))
-                            return result;
-                    }
-
-                    cultureInfo = cultureInfo.Parent;
+                    if (selectorFunc(translations, out T result) || cultureInfo == CultureInfo.InvariantCulture)
+                        return result;
                 }
 
-                selectorFunc(resources[CultureInfo.InvariantCulture], out T retVal);
-                return retVal;
+                return TraverseCultures<T>(cultureInfo.Parent, selectorFunc);
             }
 
             private static readonly Translations invariant = new()
