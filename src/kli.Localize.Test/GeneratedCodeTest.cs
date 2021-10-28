@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using kli.Localize.Generator.Base;
 using kli.Localize.Test.TestLocalizations;
 using Xunit;
 
@@ -23,7 +24,7 @@ namespace kli.Localize.Test
         {
             CultureInfo.CurrentUICulture = new CultureInfo(culture);
             Assert.Equal(expected, Locale.TestKey);
-            Assert.Equal("Nür hiär", Locale.OnlyHere); 
+            Assert.Equal("Nür hiär", Locale.OnlyHere);
         }
 
         [Fact]
@@ -44,9 +45,28 @@ namespace kli.Localize.Test
         [Fact]
         public void TestGetAll()
         {
-            Assert.Equal(6, Locale.GetAll().Count);
+            
+            Assert.Equal(7, Locale.GetAll().Count);
             Assert.Equal(1, Locale.GetAll(new CultureInfo("en-US")).Count);
-            Assert.Equal(6, Locale.GetAll(new CultureInfo("fr")).Count);
+            Assert.Equal(7, Locale.GetAll(new CultureInfo("fr")).Count);
+        }
+
+        [Fact]
+        public void TestStatic()
+        {
+            CultureInfo.CurrentUICulture = new CultureInfo("en-US");
+            Assert.Equal("US", Locale.GetString(nameof(Locale.TestKey), false));
+            Assert.Equal("Nür hiär", Locale.GetString(nameof(Locale.OnlyHere), true));
+            Assert.Null(Locale.GetString(nameof(Locale.OnlyHere), false));
+            
+            var allWithParents = Locale.GetAll(true);
+            Assert.Equal(2, allWithParents.Count);
+            Assert.Equal("1", allWithParents["XYZ"]);
+            Assert.Equal("US", allWithParents["TestKey"]);
+            var allWithoutParents = Locale.GetAll(false);
+            Assert.Equal(1, allWithoutParents.Count);
+            Assert.Equal("US", allWithParents["TestKey"]);
         }
     }
 }
+

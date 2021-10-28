@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\kli.Localize.Generator\kli.Localize.Generator.csproj" />
+    <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="5.0.11" />
+
+  </ItemGroup>
+
+</Project>

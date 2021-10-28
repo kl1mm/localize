@@ -8,7 +8,7 @@ namespace kli.Localize.Example
         static void Main(string[] args)
         {
             // Neutral/Invariant
-            Console.WriteLine(Localizations.Locale.MyText);  // Hallo Welt (German)
+            Console.WriteLine(Texts.MyText);  // Hallo Welt (German)
 
             CultureInfo.CurrentUICulture = new CultureInfo("en");
             Console.WriteLine(Localizations.Locale.MyText);  // Hello World (English)

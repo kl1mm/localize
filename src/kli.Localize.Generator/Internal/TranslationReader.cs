@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Xml;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Text;
@@ -22,7 +23,7 @@ namespace kli.Localize.Generator.Internal
         {
             try
             {
-                var allTranslations = JsonConvert.DeserializeObject<Translations>(File.ReadAllText(filePath));
+                var allTranslations = ReadTranslations(filePath);
                 var validTranslations = allTranslations
                                .Where(t => this.IsValidIdentifier(t.Key));
 
@@ -45,6 +46,48 @@ namespace kli.Localize.Generator.Internal
             }
         }
 
+        private static Translations? ReadTranslations(string filePath)
+        {
+            var lower = Path.GetExtension(filePath).ToLower();
+            return lower switch
+            {
+                ".json" => FromJson(filePath),
+                ".yml" => FromYaml(filePath),
+                ".yaml" => FromYaml(filePath),
+                ".xml" => FromResx(filePath),
+                ".resx" => FromResx(filePath),
+                _ => null
+            };
+        }
+
+        private static Translations? FromJson(string filePath)
+        {
+            var allTranslations = JsonConvert.DeserializeObject<Translations>(File.ReadAllText(filePath));
+            return allTranslations;
+        }
+
+        private static Translations? FromResx(string filename)
+        {
+            var result = new Translations();
+            XmlDocument doc = new XmlDocument();
+            doc.Load(filename);
+
+            foreach (XmlNode node in doc.SelectNodes("//root/data"))
+            {
+                var value = node.SelectSingleNode("value").InnerText.Replace('"', '\'');
+                var key = node.Attributes["name"].Value;
+                result.Add(key, value);
+            }
+
+            return result;
+        }
+
+        private static Translations? FromYaml(string filename)
+        {
+            var serializer = new YamlDotNet.Serialization.Deserializer();
+            return serializer.Deserialize<Translations>(File.ReadAllText(filename));
+        }
+        
         private bool IsValidIdentifier(string identifier)
         {
             return SyntaxFacts.IsValidIdentifier(identifier)

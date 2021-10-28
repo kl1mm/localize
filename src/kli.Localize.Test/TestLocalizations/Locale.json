@@ -1,15 +1,16 @@
 ﻿{
     "TestKey": "Neutral",
     "OnlyHere": "Nür hiär",
+    "NeuKee":  "123", 
     "SpecialChars": "\" \\ @ ß",
     "1": "One",                     // -> skiped with warning
     " ": "Blank",                   // -> skiped with warning
     "class": "keywords",            // -> skiped with warning
     "true": "type",                 // -> skiped with warning
-
+    "Key with space":  "was", 
     "NumberValue": 4.2,             
     "BoolValue": true,              
     //"ObjectValue": { "A": "3" }   // -> generation error 
     //"ArrayValue": [ 1, 2, 3 ],    // -> generation error
-    "NullValue": null               
+    "NullValue": null,
 }
