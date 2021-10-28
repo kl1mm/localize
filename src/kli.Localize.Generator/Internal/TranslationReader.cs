@@ -6,6 +6,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Text;
 using Newtonsoft.Json;
+using YamlDotNet.Core;
 using Translations = System.Collections.Generic.Dictionary<string, string>;
 
 namespace kli.Localize.Generator.Internal
@@ -25,12 +26,12 @@ namespace kli.Localize.Generator.Internal
             {
                 var allTranslations = ReadTranslations(filePath);
                 var validTranslations = allTranslations
-                               .Where(t => this.IsValidIdentifier(t.Key));
+                    .Where(t => this.IsValidIdentifier(t.Key));
 
                 foreach (var invalid in allTranslations.Except(validTranslations))
                 {
                     var match = File.ReadLines(filePath)
-                        .Select((line, index) => new { line, lineNumber = index })
+                        .Select((line, index) => new {line, lineNumber = index})
                         .FirstOrDefault(x => x.line.Contains(invalid.Key) && x.line.Contains(invalid.Value));
 
                     this.ReportDiagnostic(filePath,
@@ -56,7 +57,7 @@ namespace kli.Localize.Generator.Internal
                 ".yaml" => FromYaml(filePath),
                 ".xml" => FromResx(filePath),
                 ".resx" => FromResx(filePath),
-                _ => null
+                _ => FromJson(filePath)
             };
         }
 
@@ -90,6 +91,7 @@ namespace kli.Localize.Generator.Internal
         
         private bool IsValidIdentifier(string identifier)
         {
+            identifier = PropertyNameChangePattern.Change(identifier);
             return SyntaxFacts.IsValidIdentifier(identifier)
                 && SyntaxFacts.GetKeywordKind(identifier) == SyntaxKind.None
                 && SyntaxFacts.GetContextualKeywordKind(identifier) == SyntaxKind.None;

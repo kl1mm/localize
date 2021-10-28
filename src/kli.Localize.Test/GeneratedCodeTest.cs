@@ -43,12 +43,22 @@ namespace kli.Localize.Test
         }
 
         [Fact]
+        public void TestNameBehavior()
+        {
+            Assert.Equal("was", Locale.GetString("Key with space"));
+            Assert.Equal("was", Locale.Key_with_space);
+            CultureInfo.CurrentUICulture = new CultureInfo("en-US");
+            Assert.Equal("what", Locale.GetString("Key with space"));
+            Assert.Equal("what", Locale.Key_with_space);
+        }
+
+        [Fact]
         public void TestGetAll()
         {
             
-            Assert.Equal(7, Locale.GetAll().Count);
+            Assert.Equal(9, Locale.GetAll().Count);
             Assert.Equal(1, Locale.GetAll(new CultureInfo("en-US")).Count);
-            Assert.Equal(7, Locale.GetAll(new CultureInfo("fr")).Count);
+            Assert.Equal(9, Locale.GetAll(new CultureInfo("fr")).Count);
         }
 
         [Fact]
@@ -60,7 +70,7 @@ namespace kli.Localize.Test
             Assert.Null(Locale.GetString(nameof(Locale.OnlyHere), false));
             
             var allWithParents = Locale.GetAll(true);
-            Assert.Equal(2, allWithParents.Count);
+            Assert.Equal(3, allWithParents.Count);
             Assert.Equal("1", allWithParents["XYZ"]);
             Assert.Equal("US", allWithParents["TestKey"]);
             var allWithoutParents = Locale.GetAll(false);

@@ -6,11 +6,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <AdditionalFiles Include="Localizations\Texts.json" />
+        <PackageReference Include="kli.Localize" Version="*" />
+        <AdditionalFiles Include="Localizations\Locale.json" />
     </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\..\src\kli.Localize.Generator\kli.Localize.Generator.csproj" />
-    </ItemGroup>
-
+    
 </Project>

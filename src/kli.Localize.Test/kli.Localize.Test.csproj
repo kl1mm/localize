@@ -22,6 +22,7 @@
         <ProjectReference Include="..\kli.Localize.Web\kli.Localize.Web.csproj" />
 
         <AdditionalFiles Include="TestLocalizations\Locale.json" />
+        <!--<AdditionalFiles Include="TestLocalizations\YamlLocale.yml" />-->
     </ItemGroup>
 
 </Project>

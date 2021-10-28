@@ -1,8 +1,10 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using kli.Localize.Generator.Internal;
 using Microsoft.CodeAnalysis;
 using Moq;
+using Newtonsoft.Json;
 using Xunit;
 
 namespace kli.Localize.Test
@@ -44,7 +46,8 @@ namespace kli.Localize.Test
 
                 var reader = new TranslationReader(reporterMock.Object);
 
-                Assert.Single(reader.Read(Path.Combine(filePath)));
+                var result = reader.Read(Path.Combine(filePath));
+                Assert.Single(result);
                 reporterMock.Verify(m => m(It.IsAny<Diagnostic>()), Times.Exactly(2));
             }
             finally
@@ -71,5 +74,26 @@ namespace kli.Localize.Test
                 File.Delete(filePath);
             }
         }
+
+
+        [Fact]
+        public void TestReadYaml()
+        {
+            var filePath = Path.GetRandomFileName()+".yml";
+            try
+            {
+                File.WriteAllText(filePath, "Foo: One \r\n1: One \r\nMyKey: My key");
+
+                var reader = new TranslationReader(reporterMock.Object);
+                var result = reader.Read(Path.Combine(filePath));
+                Assert.Equal(2, result.Count);
+                reporterMock.Verify(m => m(It.IsAny<Diagnostic>()), Times.Exactly(1));
+            }
+            finally
+            {
+                File.Delete(filePath);
+            }
+        }
+
     }
 }

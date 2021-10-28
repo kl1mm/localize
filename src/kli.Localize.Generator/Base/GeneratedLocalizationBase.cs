@@ -6,7 +6,7 @@ using Translations = System.Collections.Generic.Dictionary<string, string>;
 
 namespace kli.Localize.Generator.Base
 {
-    public class GeneratedLocalizationBase<T> : GeneratedLocalizationBase
+    public abstract class GeneratedLocalizationBase<T> : GeneratedLocalizationBase
         where T : GeneratedLocalizationBase<T>, new()
     {
         private static readonly Lazy<T> current = new(() => new T());
@@ -17,7 +17,7 @@ namespace kli.Localize.Generator.Base
         public static string GetString(string key, bool includeParents, CultureInfo cultureInfo = null) => ((GeneratedLocalizationBase)GetInstance()).GetString(key, includeParents, cultureInfo);
     }
 
-    public class GeneratedLocalizationBase : IGeneratedLocalization
+    public abstract class GeneratedLocalizationBase : IGeneratedLocalization
     {
         protected virtual LocalizationProviderBase Provider { get; }
 
