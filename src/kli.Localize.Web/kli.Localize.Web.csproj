@@ -33,7 +33,10 @@
         <ProjectReference Include="..\kli.Localize.Generator\kli.Localize.Generator.csproj" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
         <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="5.0.11" />
-
+        <PackageReference Include="Nerdbank.GitVersioning" Version="3.4.231">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
     </ItemGroup>
 
 </Project>
