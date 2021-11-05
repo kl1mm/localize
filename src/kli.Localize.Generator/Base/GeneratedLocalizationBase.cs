@@ -23,8 +23,8 @@ namespace kli.Localize.Generator.Base
 
         public IDictionary<string, string> GetAll(CultureInfo cultureInfo = null) => Provider.GetValues(cultureInfo);
         public IDictionary<string, string> GetAll(bool includeParents, CultureInfo cultureInfo = null) => includeParents ? Provider.GetValuesWithParents(cultureInfo) : Provider.GetValues(cultureInfo);
-        public string GetString(string key, CultureInfo cultureInfo = null) => Provider.GetValue(key, cultureInfo);
-        public string GetString(string key, bool includeParents, CultureInfo cultureInfo = null) => Provider.GetValue(key, cultureInfo, includeParents);
+        public virtual string GetString(string key, CultureInfo cultureInfo = null) => Provider.GetValue(key, cultureInfo);
+        public virtual string GetString(string key, bool includeParents, CultureInfo cultureInfo = null) => Provider.GetValue(key, cultureInfo, includeParents);
 
         protected class LocalizationProviderBase
         {

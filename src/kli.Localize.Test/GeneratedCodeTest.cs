@@ -56,9 +56,9 @@ namespace kli.Localize.Test
         public void TestGetAll()
         {
             
-            Assert.Equal(9, Locale.GetAll().Count);
+            Assert.Equal(10, Locale.GetAll().Count);
             Assert.Equal(1, Locale.GetAll(new CultureInfo("en-US")).Count);
-            Assert.Equal(9, Locale.GetAll(new CultureInfo("fr")).Count);
+            Assert.Equal(10, Locale.GetAll(new CultureInfo("fr")).Count);
         }
 
         [Fact]

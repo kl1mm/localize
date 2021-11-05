@@ -30,8 +30,7 @@ namespace kli.Localize.Generator.Internal
                     SyntaxFactory.SimpleBaseType(SyntaxFactory.ParseTypeName($"GeneratedLocalizationBase<{context.GeneratedClassName}>")),
                     SyntaxFactory.SimpleBaseType(SyntaxFactory.ParseTypeName(nameof(IGeneratedLocalization))))
                     .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
-                .AddModifiers(SyntaxFactory.Token(SyntaxKind.SealedKeyword))
-                .AddModifiers(SyntaxFactory.Token(SyntaxKind.PartialKeyword))
+                    .AddModifiers(SyntaxFactory.Token(SyntaxKind.PartialKeyword))
                 .AddMembers(this.LocalizationProviderField())
                 .AddMembers(this.LocalizationProviderProperty())
                     .AddMembers(translations.Select(this.ProjectTranslationToMemberDeclaration).ToArray())
@@ -47,7 +46,7 @@ namespace kli.Localize.Generator.Internal
                 .AddMembers(classDeclaration)
                 .NormalizeWhitespace()
                 .ToFullString();
-
+            
             return SourceText.From(sourceAsString, Encoding.UTF8);
         }
 

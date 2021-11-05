@@ -26,15 +26,6 @@ namespace kli.Localize.Test
             Assert.Equal("what", localizer["Key with space"]);
         }
 
-        [Fact]
-        public void TestServiceCollection()
-        {
-            ServiceCollectionExtensions.AddLocalizationFromGenerated(null, o =>
-            {
-                o.LocationsToSearchGeneratedLocales = new []{ typeof(Locale).Assembly};
-                o.UseExistingLocalizationRegistrationsAsFallback = true;
-            });
-        }
     }
 }
 

@@ -14,5 +14,5 @@
     //"ArrayValue": [ 1, 2, 3 ],    // -> generation error
     "NullValue": null,
     "EmptyStr": "",
-    "Key with some {0} placeholders for {1}": "Key with two {0} placeholders for {1}"
+    "Key with some {0} placeholders for {1}": "Key with two {0} placeholders for {1} bla"
 }

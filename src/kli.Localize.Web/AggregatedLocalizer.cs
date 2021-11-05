@@ -10,7 +10,10 @@ namespace kli.Localize.Web
     {
         private readonly IServiceProvider _provider;
 
-        private IEnumerable<IStringLocalizer<T>> OtherLocalizers => _provider.GetServices<IStringLocalizer<T>>().Where(l => l.GetType() != GetType());
+        private IEnumerable<IStringLocalizer<T>> OtherLocalizers => _provider.GetServices<IStringLocalizer<T>>().Where(l => l.GetType() != GetType())
+            .OrderBy(OrderKeySelector);
+
+        public Func<IStringLocalizer<T>, string> OrderKeySelector { get; set; } = l => l.GetType().Name;
 
         public AggregatedLocalizer(IServiceProvider provider)
         {
@@ -19,7 +22,18 @@ namespace kli.Localize.Web
 
         public IEnumerable<LocalizedString> GetAllStrings(bool includeParentCultures)
         {
-            return OtherLocalizers.SelectMany(l => l.GetAllStrings()).Distinct();
+            var result = new List<List<LocalizedString>>();
+            foreach (var localizer in OtherLocalizers)
+            {
+                try
+                {
+                    // We need to enumerate completely here to ensure we can catch exception for blazor WASM 
+                    result.Add(localizer.GetAllStrings(includeParentCultures).ToList());
+                }
+                catch
+                { }
+            }
+            return result.SelectMany(l => l).Distinct();
         }
 
         public LocalizedString this[string name]
