@@ -1,3 +1,5 @@
 ﻿{
-    "TestKey": "EN"
+    "TestKey": "EN",
+    "XYZ": 1,
+    "Key with space": "what"
 }

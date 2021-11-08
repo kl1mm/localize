@@ -14,7 +14,7 @@ namespace kli.Localize.Generator.Internal
 
         public static CultureData Initialize(string cultureFileName)
         {
-            var cultureId = Path.GetFileNameWithoutExtension(cultureFileName).Split('_').Skip(1).LastOrDefault();
+            var cultureId = ReadCultureNameFromFileName(cultureFileName);
             if (string.IsNullOrEmpty(cultureId))
                 return new() { Key = "CultureInfo.InvariantCulture",  Normalized = "invariant", FilePath = cultureFileName };
 
@@ -23,6 +23,11 @@ namespace kli.Localize.Generator.Internal
                 Normalized = NormalizeCultureIdentifier(cultureId), 
                 FilePath = cultureFileName 
             };
+        }
+
+        internal static string ReadCultureNameFromFileName(string fileName)
+        {
+            return Path.GetFileNameWithoutExtension(fileName).Split('_', '.').Skip(1).LastOrDefault();
         }
 
         private static string NormalizeCultureIdentifier(string cultureId)
