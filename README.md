@@ -27,8 +27,7 @@ Example:
 }
 ```
 
-Give your default localization a name **without** specifying the culture (e.g. `Locale.json` or `Locale.yml` or `Locale.resx`). All other localizations follow the pattern `<Filename>_<CultureInfo.Name>.<extension>` (e.g. `Locale_en-US.json` for American English or `Locale_en.yml` for English) or the pattern
-`<Filename>.<CultureInfo.Name>.<extension>` (e.g. `Locale.en-US.json` for American English or `Locale.en.yml` for English)
+Give your default localization a name **without** specifying the culture (e.g. `Locale.json`). All other localizations follow the pattern `<Filename>_<CultureInfo.Name>.json` (e.g. `Locale_en-US.json` for American English or `Locale_en.json` for English)
 
 ![locale_files image][locale_files]
 
@@ -42,7 +41,7 @@ Example:
 <Project Sdk="Microsoft.NET.Sdk">
 
     <ItemGroup>
-        <PackageReference Include="kli.Localize" Version="0.8.*" />
+        <PackageReference Include="kli.Localize" Version="0.7.*" />
 
         <AdditionalFiles Include="TestLocalizations\Locale.json" />
     </ItemGroup>
@@ -51,14 +50,6 @@ Example:
 ```
 
 This means: if you have a `Locale.json` and a `Locale_en-US.json` you **only** have to add the `Locale.json` as `<AdditionalFiles>`. You can add as many files as you want.
-
-### Create resource files automatically
-This package also works well with an automatic creation tool for resources called ResourceTranslator.CLI
-<br>
-With this [**ResourceTranslator**](https://www.nuget.org/packages/ResourceTranslator.CLI/) you can for example create missing entries or whole missing culture files automatically on build.
-<br>
-Nuget Package:  [**ResourceTranslator**](https://www.nuget.org/packages/ResourceTranslator.CLI/)
-
 
 ### Use it in your code
 

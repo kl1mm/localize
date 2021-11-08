@@ -19,10 +19,8 @@
 
     <ItemGroup>
         <ProjectReference Include="..\kli.Localize.Generator\kli.Localize.Generator.csproj" OutputItemType="Analyzer" />
-        <ProjectReference Include="..\kli.Localize.Web\kli.Localize.Web.csproj" />
 
         <AdditionalFiles Include="TestLocalizations\Locale.json" />
-        <!--<AdditionalFiles Include="TestLocalizations\YamlLocale.yml" />-->
     </ItemGroup>
 
 </Project>
