@@ -26,10 +26,10 @@ namespace kli.Localize.Generator.Internal
             if (this.optionsTryGetFunc("build_property.projectdir", out var projectDir))
             {
                 var fromPath = this.EnsurePathEndsWithDirectorySeparator(projectDir);
-                var toPath = Path.GetDirectoryName(this.originFilePath);
+                var toPath = this.EnsurePathEndsWithDirectorySeparator(Path.GetDirectoryName(this.originFilePath));
                 var relativPath = this.GetRelativePath(fromPath, toPath);
 
-                return $"{rootNamespace}.{relativPath.Replace(Path.DirectorySeparatorChar, '.')}";
+                return $"{rootNamespace}.{relativPath.Replace(Path.DirectorySeparatorChar, '.')}".TrimEnd('.');
             }
 
             return rootNamespace;

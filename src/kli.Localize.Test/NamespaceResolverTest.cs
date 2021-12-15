@@ -52,36 +52,51 @@ namespace kli.Localize.Test
         }
 
         [Fact]
+        public void TestResolveWithWithWhiteSpaceInPath()
+        {
+            var options = new Dictionary<string, string>
+            {
+                { "build_property.rootnamespace", "kli.Components.CoMet" },
+                { "build_property.projectdir", @"_git\Components\Components CoMet Business".ToOsSpecificPath(@"c:\") },
+            };
+
+            var originFilePath = @"_git\Components\Components CoMet Business\File.json".ToOsSpecificPath(@"c:\");
+            
+            var resolver = new NamespaceResolver(originFilePath, fallback, options.TryGetValue);
+            Assert.Equal("kli.Components.CoMet", resolver.Resolve());
+        }
+
+        [Fact]
         public void TestResolveFallbackNamespaceNoProjectDir()
         {
-           var options = new Dictionary<string, string>
+            var options = new Dictionary<string, string>
            {
                { "build_property.rootnamespace", "kli.Spring" },
            };
 
-           var resolver = new NamespaceResolver(originFilePath, fallback, options.TryGetValue);
-           Assert.Equal("kli.Spring", resolver.Resolve());
+            var resolver = new NamespaceResolver(originFilePath, fallback, options.TryGetValue);
+            Assert.Equal("kli.Spring", resolver.Resolve());
         }
 
         [Fact]
         public void TestResolveFallbackNamespaceNoRoot()
         {
-           var options = new Dictionary<string, string>
+            var options = new Dictionary<string, string>
            {
                { "build_property.projectdir", @"_git\SLN\Project.Name".ToOsSpecificPath()  },
            };
 
-           var resolver = new NamespaceResolver(originFilePath, fallback, options.TryGetValue);
-           Assert.Equal("kli.Fall.Folder", resolver.Resolve());
+            var resolver = new NamespaceResolver(originFilePath, fallback, options.TryGetValue);
+            Assert.Equal("kli.Fall.Folder", resolver.Resolve());
         }
 
         [Fact]
         public void TestResolveFallbackNamespaceNoOptions()
         {
-           var options = new Dictionary<string, string>();
+            var options = new Dictionary<string, string>();
 
-           var resolver = new NamespaceResolver(originFilePath, fallback, options.TryGetValue);
-           Assert.Equal("kli.Fall", resolver.Resolve());
+            var resolver = new NamespaceResolver(originFilePath, fallback, options.TryGetValue);
+            Assert.Equal("kli.Fall", resolver.Resolve());
         }
     }
 
