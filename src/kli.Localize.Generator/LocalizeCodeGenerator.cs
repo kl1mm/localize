@@ -1,4 +1,6 @@
-﻿using kli.Localize.Generator.Internal;
+﻿using System;
+using System.Linq;
+using kli.Localize.Generator.Internal;
 using Microsoft.CodeAnalysis;
 
 namespace kli.Localize.Generator
@@ -20,7 +22,8 @@ namespace kli.Localize.Generator
 
             var translationReader = new TranslationReader(context.ReportDiagnostic);
             var codeGenerator = new LocalizeCodeGeneratorCore(translationReader);
-            foreach (var file in context.AdditionalFiles)
+            var additionalFiles = context.AdditionalFiles.Where(af => af.Path.EndsWith(".json", StringComparison.OrdinalIgnoreCase));
+            foreach (var file in additionalFiles)
             {
                 var namespaceResolver = new NamespaceResolver(file.Path, context.Compilation.AssemblyName, 
                     context.AnalyzerConfigOptions.GlobalOptions.TryGetValue);
