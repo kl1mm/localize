@@ -4,7 +4,7 @@
     "SpecialChars": "\" \\ @ ß",
     "1": "One",                     // -> skiped with warning
     " ": "Blank",                   // -> skiped with warning
-    "class": "keywords",            // -> skiped with warning
+    "class": "keywords1",            // -> skiped with warning
     "true": "type",                 // -> skiped with warning
 
     "NumberValue": 4.2,             

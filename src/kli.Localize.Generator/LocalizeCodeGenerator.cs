@@ -15,19 +15,17 @@ namespace kli.Localize.Generator
 
         public void Execute(GeneratorExecutionContext context)
         {
-            //#if DEBUG
-            //            if (!System.Diagnostics.Debugger.IsAttached)
-            //                System.Diagnostics.Debugger.Launch();
-            //#endif
+            // #if DEBUG
+            //             if (!System.Diagnostics.Debugger.IsAttached)
+            //                 System.Diagnostics.Debugger.Launch();
+            // #endif
 
             var translationReader = new TranslationReader(context.ReportDiagnostic);
             var codeGenerator = new LocalizeCodeGeneratorCore(translationReader);
             var additionalFiles = context.AdditionalFiles.Where(af => af.Path.EndsWith(".json", StringComparison.OrdinalIgnoreCase));
             foreach (var file in additionalFiles)
             {
-                var namespaceResolver = new NamespaceResolver(file.Path, context.Compilation.AssemblyName, 
-                    context.AnalyzerConfigOptions.GlobalOptions.TryGetValue);
-
+                var namespaceResolver = new NamesResolver(file, context.Compilation.AssemblyName, context.AnalyzerConfigOptions);
                 var ctx = new GeneratorDataContext(file, namespaceResolver);
                 context.AddSource(ctx.GeneratedFileName, codeGenerator.CreateClass(ctx));
             }

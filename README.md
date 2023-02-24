@@ -39,13 +39,11 @@ Example:
 
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
-
     <ItemGroup>
         <PackageReference Include="kli.Localize" Version="0.7.*" />
 
         <AdditionalFiles Include="TestLocalizations\Locale.json" />
     </ItemGroup>
-
 </Project>
 ```
 
@@ -148,6 +146,31 @@ Access is based on [CultureInfo.CurrentUICulture](https://docs.microsoft.com/en-
 The namespace is generated using the following pattern:<br>
 `rootnamespace + relative directory structure`
 <br>
+
+## Version Changes
+
+### From version 0.8
+
+It is now possible to override the namespace and the class/file name that will be generated:
+```xml
+<Project Sdk="Microsoft.NET.Sdk">
+    <ItemGroup>
+        <PackageReference Include="kli.Localize" Version="0.8.*" />
+
+        <AdditionalFiles Include="Localizations\Locale.json" 
+                         NamespaceName="Namesapce.of.your.choice"
+                         ClassName="MyClassName" />
+    </ItemGroup>
+</Project>
+```
+From which the following is generated:
+```csharp
+namespace Namesapce.of.your.choice
+{
+    ...
+    public sealed class MyClassName {
+    ...
+```
 
 ## Help! Why is no code generated?
 

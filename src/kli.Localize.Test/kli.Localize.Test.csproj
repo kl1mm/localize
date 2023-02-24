@@ -20,7 +20,9 @@
     <ItemGroup>
         <ProjectReference Include="..\kli.Localize.Generator\kli.Localize.Generator.csproj" OutputItemType="Analyzer" />
 
-        <AdditionalFiles Include="TestLocalizations\Locale.json" />
+        <AdditionalFiles Include="TestLocalizations\Locale.json" NamespaceName="kli.Localilizations" ClassName="MyLocale" />
     </ItemGroup>
 
+    <Import Project="..\kli.Localize.Generator\LocalizeGenerator.props" />
+    
 </Project>

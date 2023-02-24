@@ -13,13 +13,13 @@ namespace kli.Localize.Generator.Internal
         public string GeneratedFileName { get; set; }
         public string GeneratedClassName { get; set; }
 
-        public GeneratorDataContext(AdditionalText originFile, NamespaceResolver namespaceResolver)
+        public GeneratorDataContext(AdditionalText originFile, NamesResolver namesResolver)
         {
             this.OriginFilePath = originFile.Path;
             this.CultureData = this.ResolveCultureFiles(originFile);
-            this.GeneratedClassName = Path.GetFileNameWithoutExtension(originFile.Path);
-            this.GeneratedFileName = $"{this.GeneratedClassName}.g.cs";
-            this.Namespace = namespaceResolver.Resolve();
+            this.GeneratedClassName = namesResolver.ResolveGeneratedClassName();
+            this.GeneratedFileName = namesResolver.ResolveGeneratedFileName(); 
+            this.Namespace = namesResolver.ResolveNamespace();
         }
 
         private IReadOnlyList<CultureData> ResolveCultureFiles(AdditionalText originFile)

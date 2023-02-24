@@ -1,5 +1,5 @@
 ﻿using System.Globalization;
-using kli.Localize.Test.TestLocalizations;
+using kli.Localilizations;
 using Xunit;
 
 namespace kli.Localize.Test
@@ -22,31 +22,31 @@ namespace kli.Localize.Test
         public void TestLocale(string expected, string culture)
         {
             CultureInfo.CurrentUICulture = new CultureInfo(culture);
-            Assert.Equal(expected, Locale.TestKey);
-            Assert.Equal("Nür hiär", Locale.OnlyHere); 
+            Assert.Equal(expected, MyLocale.TestKey);
+            Assert.Equal("Nür hiär", MyLocale.OnlyHere); 
         }
 
         [Fact]
         public void TestSpecialChars()
         {
-            Assert.Equal("\" \\ @ ß", Locale.SpecialChars);
+            Assert.Equal("\" \\ @ ß", MyLocale.SpecialChars);
         }
 
         [Fact]
         public void TestGetString()
         {
-            Assert.Equal("Neutral", Locale.GetString(nameof(Locale.TestKey)));
-            Assert.Equal("US", Locale.GetString(nameof(Locale.TestKey), new CultureInfo("en-US")));
-            Assert.Equal("Unknown", Locale.GetString("Unknown"));
-            Assert.Equal("Unknown", Locale.GetString("Unknown", new CultureInfo("en-US")));
+            Assert.Equal("Neutral", MyLocale.GetString(nameof(MyLocale.TestKey)));
+            Assert.Equal("US", MyLocale.GetString(nameof(MyLocale.TestKey), new CultureInfo("en-US")));
+            Assert.Equal("Unknown", MyLocale.GetString("Unknown"));
+            Assert.Equal("Unknown", MyLocale.GetString("Unknown", new CultureInfo("en-US")));
         }
 
         [Fact]
         public void TestGetAll()
         {
-            Assert.Equal(6, Locale.GetAll().Count);
-            Assert.Equal(1, Locale.GetAll(new CultureInfo("en-US")).Count);
-            Assert.Equal(6, Locale.GetAll(new CultureInfo("fr")).Count);
+            Assert.Equal(6, MyLocale.GetAll().Count);
+            Assert.Equal(1, MyLocale.GetAll(new CultureInfo("en-US")).Count);
+            Assert.Equal(6, MyLocale.GetAll(new CultureInfo("fr")).Count);
         }
     }
 }
