@@ -23,6 +23,6 @@
         <AdditionalFiles Include="TestLocalizations\Locale.json" NamespaceName="kli.Localilizations" ClassName="MyLocale" />
     </ItemGroup>
 
-    <Import Project="..\kli.Localize.Generator\LocalizeGenerator.props" />
+    <Import Project="..\kli.Localize.Generator\kli.Localize.props" />
     
 </Project>
