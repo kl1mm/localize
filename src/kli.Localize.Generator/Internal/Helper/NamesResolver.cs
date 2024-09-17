@@ -3,7 +3,7 @@ using System.IO;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace kli.Localize.Generator.Internal
+namespace kli.Localize.Generator.Internal.Helper
 {
     internal class NamesResolver
     {
@@ -22,7 +22,7 @@ namespace kli.Localize.Generator.Internal
         {
             if (this.optionsProvider.GetOptions(this.originFile).TryGetValue("build_metadata.AdditionalFiles.ClassName", out var className) && !string.IsNullOrWhiteSpace(className))
                 return className;
-            return Path.GetFileNameWithoutExtension(originFile.Path);
+            return Path.GetFileNameWithoutExtension(this.originFile.Path);
         }
         
         public string ResolveGeneratedFileName() 
@@ -34,7 +34,7 @@ namespace kli.Localize.Generator.Internal
                 return namespaceName;
 
             if (!this.optionsProvider.GlobalOptions.TryGetValue("build_property.rootnamespace", out var rootNamespace))
-                rootNamespace = fallBackRootNamespace;
+                rootNamespace = this.fallBackRootNamespace;
 
             if (this.optionsProvider.GlobalOptions.TryGetValue("build_property.projectdir", out var projectDir))
             {

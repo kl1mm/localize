@@ -1,9 +1,9 @@
 ﻿using System;
 using System.IO;
-using kli.Localize.Generator.Internal;
+using kli.Localize.Generator.Internal.Helper;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Moq;
+using NSubstitute;
 using Xunit;
 
 namespace kli.Localize.Test
@@ -16,7 +16,7 @@ namespace kli.Localize.Test
         [Fact]
         public void TestResolve()
         {
-            var file = Mock.Of<AdditionalText>(m => m.Path == originFilePath);
+            var file = AdditionalTextMock(originFilePath);
             var optionsProvider = this.SetupOptionsProvider(rootNamespace: "kli.Spring", projectDir: @"_git\SLN\Project.Name");
             var resolver = new NamesResolver(file, fallback, optionsProvider);
 
@@ -26,7 +26,7 @@ namespace kli.Localize.Test
         [Fact]
         public void TestResolveByNamesapceNameParameter()
         {
-            var file = Mock.Of<AdditionalText>(m => m.Path == originFilePath);
+            var file = AdditionalTextMock(originFilePath);
             var optionsProvider = this.SetupOptionsProvider(rootNamespace: "kli.Spring", projectDir: @"_git\SLN\Project.Name", nameSpaceName: "kli.Summer");
             var resolver = new NamesResolver(file, fallback, optionsProvider);
             Assert.Equal("kli.Summer", resolver.ResolveNamespace());
@@ -35,7 +35,7 @@ namespace kli.Localize.Test
         [Fact]
         public void TestResolveProjectDirWithoutSlash()
         {
-            var file = Mock.Of<AdditionalText>(m => m.Path == originFilePath);
+            var file = AdditionalTextMock(originFilePath);
             var optionsProvider = this.SetupOptionsProvider(rootNamespace: "kli.Spring", projectDir: @"_git\SLN\Project.Name");
             var resolver = new NamesResolver(file, fallback, optionsProvider);
             Assert.Equal("kli.Spring.Folder", resolver.ResolveNamespace());
@@ -44,7 +44,7 @@ namespace kli.Localize.Test
         [Fact]
         public void TestResolveCaseSensitvePathRoot()
         {
-            var file = Mock.Of<AdditionalText>(m => m.Path == originFilePath);
+            var file = AdditionalTextMock(originFilePath);
             var optionsProvider = this.SetupOptionsProvider(rootNamespace: "kli.Spring", projectDir: @"_git\SLN\Project.Name\");
             var resolver = new NamesResolver(file, fallback, optionsProvider);
             Assert.Equal("kli.Spring.Folder", resolver.ResolveNamespace());
@@ -53,7 +53,7 @@ namespace kli.Localize.Test
         [Fact]
         public void TestResolveWithWhiteSpaceInPath()
         {
-            var file = Mock.Of<AdditionalText>(m => m.Path == @"_git\Components\Components CoMet Business\File.json".ToOsSpecificPath("c:\\", "/"));
+            var file = AdditionalTextMock(@"_git\Components\Components CoMet Business\File.json".ToOsSpecificPath("c:\\", "/"));
             var optionsProvider = this.SetupOptionsProvider(rootNamespace: "kli.Components.CoMet", projectDir: @"_git\Components\Components CoMet Business");
             var resolver = new NamesResolver(file, fallback, optionsProvider);
             Assert.Equal("kli.Components.CoMet", resolver.ResolveNamespace());
@@ -62,7 +62,7 @@ namespace kli.Localize.Test
         [Fact]
         public void TestResolveFallbackNamespaceNoProjectDir()
         {
-            var file = Mock.Of<AdditionalText>(m => m.Path == originFilePath);
+            var file = AdditionalTextMock(originFilePath);
             var optionsProvider = this.SetupOptionsProvider(rootNamespace: "kli.Spring");
             var resolver = new NamesResolver(file, fallback, optionsProvider);
             Assert.Equal("kli.Spring", resolver.ResolveNamespace());
@@ -71,7 +71,7 @@ namespace kli.Localize.Test
         [Fact]
         public void TestResolveFallbackNamespaceNoRoot()
         {
-            var file = Mock.Of<AdditionalText>(m => m.Path == originFilePath);
+            var file = AdditionalTextMock(originFilePath);
             var optionsProvider = this.SetupOptionsProvider(projectDir: @"_git\SLN\Project.Name\");
             var resolver = new NamesResolver(file, fallback, optionsProvider);
             Assert.Equal("kli.Fall.Folder", resolver.ResolveNamespace());
@@ -80,7 +80,7 @@ namespace kli.Localize.Test
         [Fact]
         public void TestResolveFallbackNamespaceNoOptions()
         {
-            var file = Mock.Of<AdditionalText>(m => m.Path == originFilePath);
+            var file = AdditionalTextMock(originFilePath);
             var resolver = new NamesResolver(file, fallback, this.SetupOptionsProvider());
             
             Assert.Equal("kli.Fall", resolver.ResolveNamespace());
@@ -89,17 +89,39 @@ namespace kli.Localize.Test
         private AnalyzerConfigOptionsProvider SetupOptionsProvider(string rootNamespace = null, string projectDir = null, string nameSpaceName = null)
         {
             projectDir = projectDir?.ToOsSpecificPath();
+
+            var optionsMock = Substitute.For<AnalyzerConfigOptions>();
+            var mockAnalyzerConfigOptionsProvider = Substitute.For<AnalyzerConfigOptionsProvider>();
+            mockAnalyzerConfigOptionsProvider.GetOptions(Arg.Any<AdditionalText>()).Returns(optionsMock);
+            mockAnalyzerConfigOptionsProvider.GlobalOptions.Returns(optionsMock);
+
+            optionsMock.TryGetValue("build_property.rootnamespace", out Arg.Any<string>())
+                .Returns(ci =>
+                {
+                    ci[1] = rootNamespace;
+                    return !string.IsNullOrEmpty(rootNamespace);
+                });
+            optionsMock.TryGetValue("build_property.projectdir", out Arg.Any<string>())
+                .Returns(ci =>
+                {
+                    ci[1] = projectDir;
+                    return !string.IsNullOrEmpty(projectDir);
+                });
+            optionsMock.TryGetValue("build_metadata.AdditionalFiles.NamespaceName", out Arg.Any<string>())
+                .Returns(ci =>
+                {
+                    ci[1] = nameSpaceName;
+                    return !string.IsNullOrEmpty(nameSpaceName);
+                });
             
-            var optionsMock = new Mock<AnalyzerConfigOptions>();
-            var mockAnalyzerConfigOptionsProvider = new Mock<AnalyzerConfigOptionsProvider>();
-            mockAnalyzerConfigOptionsProvider.Setup(m => m.GetOptions(It.IsAny<AdditionalText>())).Returns(optionsMock.Object);
-            mockAnalyzerConfigOptionsProvider.Setup(m => m.GlobalOptions).Returns(optionsMock.Object);
-            
-            optionsMock.Setup(m => m.TryGetValue("build_property.rootnamespace", out rootNamespace)).Returns(!string.IsNullOrEmpty(rootNamespace));
-            optionsMock.Setup(m => m.TryGetValue("build_property.projectdir", out projectDir)).Returns(!string.IsNullOrEmpty(projectDir));
-            optionsMock.Setup(m => m.TryGetValue("build_metadata.AdditionalFiles.NamespaceName", out nameSpaceName)).Returns(!string.IsNullOrEmpty(nameSpaceName));
-            
-            return mockAnalyzerConfigOptionsProvider.Object;
+            return mockAnalyzerConfigOptionsProvider;
+        }
+
+        private AdditionalText AdditionalTextMock(string path)
+        {
+            var mock = Substitute.For<AdditionalText>();
+            mock.Path.Returns(path);
+            return mock;
         }
     }
 

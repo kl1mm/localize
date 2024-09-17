@@ -40,7 +40,7 @@ Example:
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
     <ItemGroup>
-        <PackageReference Include="kli.Localize" Version="0.7.*" />
+        <PackageReference Include="kli.Localize" Version="1.0.*" />
 
         <AdditionalFiles Include="TestLocalizations\Locale.json" />
     </ItemGroup>
@@ -146,8 +146,51 @@ Access is based on [CultureInfo.CurrentUICulture](https://docs.microsoft.com/en-
 The namespace is generated using the following pattern:<br>
 `rootnamespace + relative directory structure`
 <br>
+Since v0.8 this behaviour can be overriden [see 'From version 0.8'](#From version 0.8)
 
 ## Version Changes
+
+### From version 1.0
+
+#### BREAKING - Ignore none JSON-String/Object values
+All properties that are not string or object will be ignored. 
+```json
+{
+    "Number": 4.2,
+    "Bool": true,
+    "Null": null,
+    "Array": [1,2,3]
+}
+```
+
+#### [Add Support for Nested Classes #8](https://github.com/kl1mm/localize/issues/8)
+It is now possible to use JSON objects in the localization files.
+During generation, the structure is mapped as a nested class for access
+
+```json
+{
+    "SomeText": "some text",
+    "Sub": 
+    {
+        "FileNotFound": "Not found",
+        "DivideByZero": "x / zero"
+    },
+    "UI":{
+        "LabelOne": "One",
+        "LabelTwo": "Two",
+        "Login": {
+            "LabelUserName": "User",
+            "LabelPassword": "Pass"
+        }
+    }
+}
+```
+#### Improved Diagnostics
+ - SGL0001: InvalidJsonFileFormat - `<JsonReaderException.Message>`
+ - SGL0002: InvalidJsonPropertyName - `Json property key must be a valid C# identifier`
+ - SGL0003: InvalidJsonTokenType - `Json property value must be an object or a string`
+
+All diagnostics came with LinePostion (linenumber & column)
 
 ### From version 0.8
 
@@ -158,14 +201,14 @@ It is now possible to override the namespace and the class/file name that will b
         <PackageReference Include="kli.Localize" Version="0.8.*" />
 
         <AdditionalFiles Include="Localizations\Locale.json" 
-                         NamespaceName="Namesapce.of.your.choice"
+                         NamespaceName="Namespace.of.your.choice"
                          ClassName="MyClassName" />
     </ItemGroup>
 </Project>
 ```
 From which the following is generated:
 ```csharp
-namespace Namesapce.of.your.choice
+namespace Namespace.of.your.choice
 {
     ...
     public sealed class MyClassName {

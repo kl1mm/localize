@@ -1,15 +1,20 @@
 ﻿{
     "TestKey": "Neutral",
     "OnlyHere": "Nür hiär",
-    "SpecialChars": "\" \\ @ ß",
+    "SpecialChars": "\" \\ @ ß \r\n {0}",
     "1": "One",                     // -> skiped with warning
     " ": "Blank",                   // -> skiped with warning
     "class": "keywords1",            // -> skiped with warning
     "true": "type",                 // -> skiped with warning
 
-    "NumberValue": 4.2,             
-    "BoolValue": true,              
+    "Sub":{
+        "SubText": "Abc",
+        "SubText2": "Xyz"
+    },
+    
+    "NumberValue": 4.2,             // -> skiped with warning
+    "BoolValue": true,              // -> skiped with warning
     //"ObjectValue": { "A": "3" }   // -> generation error 
     //"ArrayValue": [ 1, 2, 3 ],    // -> generation error
-    "NullValue": null               
+    "NullValue": null               // -> skiped with warning
 }

@@ -1,0 +1,18 @@
+﻿{
+    "Errors": 
+    {
+        "FileNotFound": "Datei nicht gefunden",
+        "DivideByZero": "Durch Null geteilt"
+    },
+    "Warnings":{
+        "Caution": "Achtung"
+    },
+    "UI":{
+        "LabelOne": "Eins",
+        "LabelTwo": "Zwei",
+        "Login": {
+            "LabelUserName": "Benutzer",
+            "LabelPassword": "Passwort"
+        }
+    }
+}
