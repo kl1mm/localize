@@ -26,7 +26,7 @@
 
     <ItemGroup>
         <!-- Generator dependencies -->
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.11.0" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.11.0" GeneratePathProperty="true" PrivateAssets="all" />
         <PackageReference Include="Nerdbank.GitVersioning" Version="3.6.143">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -35,6 +35,7 @@
         <!-- Include in Analyzerpackage -->
         <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
         <None Include="$(PkgNewtonsoft_Json)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+        <None Include="$(PkgMicrosoft_CodeAnalysis_CSharp_Workspaces)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
         <!-- Package the props file -->
         <None Include="kli.Localize.props" Pack="true" PackagePath="build" />        
     </ItemGroup>
@@ -52,6 +53,7 @@
     <Target Name="GetDependencyTargetPaths">
         <ItemGroup>
             <TargetPathWithTargetPlatformMoniker Include="$(PkgNewtonsoft_Json)\lib\netstandard2.0\*.dll" IncludeRuntimeDependency="false" />
+            <TargetPathWithTargetPlatformMoniker Include="$(PkgMicrosoft_CodeAnalysis_CSharp_Workspaces)\lib\netstandard2.0\*.dll" IncludeRuntimeDependency="false" />
         </ItemGroup>
     </Target>
 
