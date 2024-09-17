@@ -1,17 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
-        <LangVersion>9.0</LangVersion>
+        <TargetFramework>net8.0</TargetFramework>
         <IsPackable>false</IsPackable>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.4.0" PrivateAssets="all" />
-        <PackageReference Include="Moq" Version="4.18.4" />
-        <PackageReference Include="xunit" Version="2.4.2" />
-        <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.11.0" PrivateAssets="all" />
+        <PackageReference Include="NSubstitute" Version="5.1.0" />
+        <PackageReference Include="Shouldly" Version="4.2.1" />
+        <PackageReference Include="xunit" Version="2.9.0" />
+        <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
@@ -20,7 +20,7 @@
     <ItemGroup>
         <ProjectReference Include="..\kli.Localize.Generator\kli.Localize.Generator.csproj" OutputItemType="Analyzer" />
 
-        <AdditionalFiles Include="TestLocalizations\Locale.json" NamespaceName="kli.Localilizations" ClassName="MyLocale" />
+        <AdditionalFiles Include="TestLocalizations\Locale.json" NamespaceName="kli.Locales" ClassName="MyLocale" />
     </ItemGroup>
 
     <Import Project="..\kli.Localize.Generator\kli.Localize.props" />

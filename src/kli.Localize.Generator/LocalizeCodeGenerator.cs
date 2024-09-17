@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 using kli.Localize.Generator.Internal;
+using kli.Localize.Generator.Internal.Helper;
+using kli.Localize.Generator.Internal.Json;
 using Microsoft.CodeAnalysis;
 
 namespace kli.Localize.Generator
@@ -20,13 +22,13 @@ namespace kli.Localize.Generator
             //                 System.Diagnostics.Debugger.Launch();
             // #endif
 
-            var translationReader = new TranslationReader(context.ReportDiagnostic);
-            var codeGenerator = new LocalizeCodeGeneratorCore(translationReader);
+            var translationReader = new JsonTranslationReader(context.ReportDiagnostic);
+            var codeGenerator = new LocalizeCodeGeneratorCore();
             var additionalFiles = context.AdditionalFiles.Where(af => af.Path.EndsWith(".json", StringComparison.OrdinalIgnoreCase));
             foreach (var file in additionalFiles)
             {
-                var namespaceResolver = new NamesResolver(file, context.Compilation.AssemblyName, context.AnalyzerConfigOptions);
-                var ctx = new GeneratorDataContext(file, namespaceResolver);
+                var namesResolver = new NamesResolver(file, context.Compilation.AssemblyName, context.AnalyzerConfigOptions);
+                var ctx = new GeneratorDataBuilder(file, namesResolver, translationReader).Build();
                 context.AddSource(ctx.GeneratedFileName, codeGenerator.CreateClass(ctx));
             }
         }
