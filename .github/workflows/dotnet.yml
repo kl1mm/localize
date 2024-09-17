@@ -32,7 +32,7 @@ jobs:
         path: src/kli.Localize.Generator/bin/Release/*.nupkg
     - name: Set job outputs
       id: setOutputs
-      run: echo "::set-output name=tag::v${{ env.GitBuildVersionSimple }}"
+      run: echo "tag=v${{ env.GitBuildVersionSimple }}" >> $GITHUB_OUTPUT
   
   deploy:
     runs-on: ubuntu-latest
