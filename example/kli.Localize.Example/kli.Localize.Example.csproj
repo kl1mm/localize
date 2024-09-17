@@ -6,7 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="kli.Localize" Version="0.8.3" />
+        <PackageReference Include="kli.Localize" Version="1.0.4" />
 
         <AdditionalFiles Include="Localizations\Locale.json" ClassName="MyLocale" />
     </ItemGroup>

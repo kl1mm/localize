@@ -1,3 +1,6 @@
 ﻿{
-	"MyText": "Hallo Welt (German)"
+	"MyText": "Hallo Welt (German)",
+    "Sub": {
+        "Nested": "Kind (German)"
+    }
 }
