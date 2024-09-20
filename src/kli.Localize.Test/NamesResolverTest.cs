@@ -24,7 +24,7 @@ namespace kli.Localize.Test
         }
 
         [Fact]
-        public void TestResolveByNamesapceNameParameter()
+        public void TestResolveByNamespaceName()
         {
             var file = AdditionalTextMock(originFilePath);
             var optionsProvider = this.SetupOptionsProvider(rootNamespace: "kli.Spring", projectDir: @"_git\SLN\Project.Name", nameSpaceName: "kli.Summer");
@@ -39,6 +39,33 @@ namespace kli.Localize.Test
             var optionsProvider = this.SetupOptionsProvider(rootNamespace: "kli.Spring", projectDir: @"_git\SLN\Project.Name");
             var resolver = new NamesResolver(file, fallback, optionsProvider);
             Assert.Equal("kli.Spring.Folder", resolver.ResolveNamespace());
+        }
+        
+        [Fact]
+        public void TestResolveClassName()
+        {
+            var file = AdditionalTextMock(originFilePath);
+            var optionsProvider = this.SetupOptionsProvider(className: "foo");
+            var resolver = new NamesResolver(file, fallback, optionsProvider);
+            Assert.Equal("foo", resolver.ResolveGeneratedClassName());
+        }
+        
+        [Fact]
+        public void TestResolveNeutralCulture()
+        {
+            var file = AdditionalTextMock(originFilePath);
+            var optionsProvider = this.SetupOptionsProvider(neutralCulture: "de");
+            var resolver = new NamesResolver(file, fallback, optionsProvider);
+            Assert.Equal("de", resolver.ResolveNeutralCulture());
+        }
+        
+        [Fact]
+        public void TestResolveNeutralCultureFallback()
+        {
+            var file = AdditionalTextMock(originFilePath);
+            var optionsProvider = this.SetupOptionsProvider();
+            var resolver = new NamesResolver(file, fallback, optionsProvider);
+            Assert.Null(resolver.ResolveNeutralCulture());
         }
 
         [Fact]
@@ -86,7 +113,7 @@ namespace kli.Localize.Test
             Assert.Equal("kli.Fall", resolver.ResolveNamespace());
         }
 
-        private AnalyzerConfigOptionsProvider SetupOptionsProvider(string rootNamespace = null, string projectDir = null, string nameSpaceName = null)
+        private AnalyzerConfigOptionsProvider SetupOptionsProvider(string rootNamespace = null, string projectDir = null, string nameSpaceName = null, string neutralCulture = null, string className = null)
         {
             projectDir = projectDir?.ToOsSpecificPath();
 
@@ -95,23 +122,35 @@ namespace kli.Localize.Test
             mockAnalyzerConfigOptionsProvider.GetOptions(Arg.Any<AdditionalText>()).Returns(optionsMock);
             mockAnalyzerConfigOptionsProvider.GlobalOptions.Returns(optionsMock);
 
-            optionsMock.TryGetValue("build_property.rootnamespace", out Arg.Any<string>())
+            optionsMock.TryGetValue($"build_property.{NamesResolver.PropertyRootNamespace}", out Arg.Any<string>())
                 .Returns(ci =>
                 {
                     ci[1] = rootNamespace;
                     return !string.IsNullOrEmpty(rootNamespace);
                 });
-            optionsMock.TryGetValue("build_property.projectdir", out Arg.Any<string>())
+            optionsMock.TryGetValue($"build_property.{NamesResolver.PropertyProjectDir}", out Arg.Any<string>())
                 .Returns(ci =>
                 {
                     ci[1] = projectDir;
                     return !string.IsNullOrEmpty(projectDir);
                 });
-            optionsMock.TryGetValue("build_metadata.AdditionalFiles.NamespaceName", out Arg.Any<string>())
+            optionsMock.TryGetValue($"build_metadata.AdditionalFiles.{NamesResolver.MetaDataNamespaceName}", out Arg.Any<string>())
                 .Returns(ci =>
                 {
                     ci[1] = nameSpaceName;
                     return !string.IsNullOrEmpty(nameSpaceName);
+                });
+            optionsMock.TryGetValue($"build_metadata.AdditionalFiles.{NamesResolver.MetaDataNeutralCulture}", out Arg.Any<string>())
+                .Returns(ci =>
+                {
+                    ci[1] = neutralCulture;
+                    return !string.IsNullOrEmpty(neutralCulture);
+                });
+            optionsMock.TryGetValue($"build_metadata.AdditionalFiles.{NamesResolver.MetaDataClassName}", out Arg.Any<string>())
+                .Returns(ci =>
+                {
+                    ci[1] = className;
+                    return !string.IsNullOrEmpty(className);
                 });
             
             return mockAnalyzerConfigOptionsProvider;

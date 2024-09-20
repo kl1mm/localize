@@ -12,7 +12,7 @@ _Also see [**example project**](https://github.com/kl1mm/localize/tree/develop/e
 
 ### Install the nuget package
 
-Add a [Nuget package](https://www.nuget.org/packages/kli.Localize/) reference to the project file in the project you want to localize:<br>
+Add a [Nuget package](https://www.nuget.org/packages/kli.Localize/) reference to the project file in the project you want to localize:  
 
 `<PackageReference Include="kli.Localize" Version="<version>" />`
 
@@ -27,13 +27,17 @@ Example:
 }
 ```
 
-Give your default localization a name **without** specifying the culture (e.g. `Locale.json`). All other localizations follow the pattern `<Filename>_<CultureInfo.Name>.json` (e.g. `Locale_en-US.json` for American English or `Locale_en.json` for English)
+Name your localization files, including the culture according to the pattern: `<FileName>_<CultureInfo.Name>.json` (e.g. `Locale_de.json`). 
+For other cultures follow the same pattern (e.g. `Locale_en-US.json` for American English or `Locale_en.json` for English).  
+You have to specify which given culture is the neutral culture (the fallback used if there is no localization found for a specific culture)
+via the `NeutralCulture` attribute on the `AdditionalFiles` element.
 
 ![locale_files image][locale_files]
 
 ### Add json files to csproj
 
-In an `ItemGroup` in your csproj file add an `AdditionFiles` element for **each default localization** json file. Set the `Include` attribute to the path of the file.
+In an `ItemGroup` in your csproj file add an `AdditionFiles` element for **each localization** json file, include other cultures via glob pattern. 
+Set the `Include` attribute to the path of the file and specify the neutral culture via the `DefaultCulture` attribute
 
 Example:
 
@@ -42,20 +46,20 @@ Example:
     <ItemGroup>
         <PackageReference Include="kli.Localize" Version="1.0.*" />
 
-        <AdditionalFiles Include="TestLocalizations\Locale.json" />
+        <AdditionalFiles Include="TestLocalizations\Locale_*.json" DefaultCulture="en"/>
     </ItemGroup>
 </Project>
 ```
 
-This means: if you have a `Locale.json` and a `Locale_en-US.json` you **only** have to add the `Locale.json` as `<AdditionalFiles>`. You can add as many files as you want.
+This means: if you have a `Locale_en.json` and a `Locale_en-US.json` add `Locale_*.json` as `<AdditionalFiles>`. And specify either `en` or `en_US` as `NeutralCulture`.  
+Add other files the same way in another `AdditionalFiles` element.
 
 ### Use it in your code
 
-Now you should be able to locate the generated source code in your project under Dependencies/Analyzers.<br>
-_Of course you can also view and debug the generated source code._<br>
+Now you should be able to locate the generated source code in your project under Dependencies/Analyzers.  
+_Of course you can also view and debug the generated source code._  
 
-![generated_1 image][generated_1]
-<br>
+![generated_1 image][generated_1]  
 
 <details>
   <summary>Generated code example</summary>
@@ -134,18 +138,20 @@ namespace kli.Localize.Example.Localizations
 
 </details>
 
-<br>
+  
 
-Import the namespace where you put your \*.json files and use the generated code to access your localizations.<br>
+Import the namespace where you put your \*.json files and use the generated code to access your localizations.  
 Access is based on [CultureInfo.CurrentUICulture](https://docs.microsoft.com/en-us/dotnet/api/system.globalization.cultureinfo.currentuiculture)
-<br><br>
+  
+  
+
 ![useit image][useit]
 
 ### Namespace generation
 
-The namespace is generated using the following pattern:<br>
-`rootnamespace + relative directory structure`
-<br>
+The namespace is generated using the following pattern:  
+`rootnamespace + relative directory structure`  
+
 Since v0.8 this behaviour can be overriden [see 'From version 0.8'](#From version 0.8)
 
 ## Version Changes
@@ -201,14 +207,14 @@ It is now possible to override the namespace and the class/file name that will b
         <PackageReference Include="kli.Localize" Version="0.8.*" />
 
         <AdditionalFiles Include="Localizations\Locale.json" 
-                         NamespaceName="Namespace.of.your.choice"
+                         NamespaceName="Namespace.Of.Your.Choice"
                          ClassName="MyClassName" />
     </ItemGroup>
 </Project>
 ```
 From which the following is generated:
 ```csharp
-namespace Namespace.of.your.choice
+namespace Namespace.Of.Your.Choice
 {
     ...
     public sealed class MyClassName {

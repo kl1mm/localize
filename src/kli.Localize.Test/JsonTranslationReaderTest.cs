@@ -3,6 +3,7 @@ using System.IO;
 using kli.Localize.Generator.Internal.Helper;
 using kli.Localize.Generator.Internal.Json;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Text;
 using NSubstitute;
 using NSubstitute.ReceivedExtensions;
 using Shouldly;
@@ -17,128 +18,98 @@ namespace kli.Localize.Test
         [Fact]
         public void TestInvalidFile()
         {
-            var filePath = Path.GetRandomFileName();
-            try
-            {
-                File.WriteAllText(filePath, "No Json");
+            var additionalText = AdditionalTextMock(content: "No Json");
 
-                var reader = new JsonTranslationReader(reporterMock);
-                var translations = reader.Read(Path.Combine(filePath));
+            var reader = new JsonTranslationReader(reporterMock);
+            var translations = reader.Read(additionalText);
 
-                translations.Count.ShouldBe(0);
-                this.reporterMock.Received(Quantity.Exactly(1));
-            }
-            finally
-            {
-                File.Delete(filePath);
-            }
-        }          
-        
+            translations.Count.ShouldBe(0);
+            this.reporterMock.Received(Quantity.Exactly(1));
+        }
+
         [Fact]
         public void TestRead()
         {
-            var filePath = Path.GetRandomFileName();
-            try
-            {
-                File.WriteAllText(filePath, "{\"Foo\": \"One\", \"Bar\": \"Two\"}");
+            var additionalText = AdditionalTextMock(content: "{\"Foo\": \"One\", \"Bar\": \"Two\"}");
 
-                var reader = new JsonTranslationReader(reporterMock);
-                var translations = reader.Read(Path.Combine(filePath));
+            var reader = new JsonTranslationReader(reporterMock);
+            var translations = reader.Read(additionalText);
 
-                Assert.Equal(2, translations.Count);
-                Assert.Equal("One", translations["Foo"]);
-                Assert.Equal("Two", translations["Bar"]);
+            Assert.Equal(2, translations.Count);
+            Assert.Equal("One", translations["Foo"]);
+            Assert.Equal("Two", translations["Bar"]);
 
-                this.reporterMock.Received(Quantity.None());
-            }
-            finally
-            {
-                File.Delete(filePath);
-            }
-        }    
-        
+            this.reporterMock.Received(Quantity.None());
+        }
+
         [Fact]
         public void TestReadComplex()
         {
-            var filePath = Path.GetRandomFileName();
-            try
-            {
-                var testData = """
-                    {
-                        "SomeText": "irgendein Text",
-                        "Errors": 
-                        {
-                            "FileNotFound": "Datei nicht gefunden",
-                            "DivideByZero": "Durch Null geteilt"
-                        },
-                        "Warnings":{
-                            " ": "Blank",                   // -> skiped with warning
-                            "Caution": "Achtung"
-                        },
-                        
-                        "UI":{
-                            "LabelOne": "Eins",
-                            "LabelTwo": "Zwei",
-                            "Login": {
-                                "LabelUserName": "Benutzer",
-                                "LabelPassword": "Passwort"
-                            }
-                        }
-                    }
-                    """;                 
-                File.WriteAllText(filePath, testData);
+            var testData = """
+                           {
+                               "SomeText": "irgendein Text",
+                               "Errors": 
+                               {
+                                   "FileNotFound": "Datei nicht gefunden",
+                                   "DivideByZero": "Durch Null geteilt"
+                               },
+                               "Warnings":{
+                                   " ": "Blank",                   // -> skiped with warning
+                                   "Caution": "Achtung"
+                               },
+                               
+                               "UI":{
+                                   "LabelOne": "Eins",
+                                   "LabelTwo": "Zwei",
+                                   "Login": {
+                                       "LabelUserName": "Benutzer",
+                                       "LabelPassword": "Passwort"
+                                   }
+                               }
+                           }
+                           """;
+            var additionalText = AdditionalTextMock(content: testData);
 
-                var reader = new JsonTranslationReader(reporterMock);
-                var translations = reader.Read(Path.Combine(filePath));
+            var reader = new JsonTranslationReader(reporterMock);
+            var translations = reader.Read(additionalText);
 
-                translations.Count.ShouldBe(4);
-                translations["UI"].ShouldBeOfType<TranslationData>();
-                ((TranslationData)translations["UI"])["Login"].ShouldBeOfType<TranslationData>();
+            translations.Count.ShouldBe(4);
+            translations["UI"].ShouldBeOfType<TranslationData>();
+            ((TranslationData)translations["UI"])["Login"].ShouldBeOfType<TranslationData>();
 
-                this.reporterMock.Received(Quantity.Exactly(1));
-            }
-            finally
-            {
-                File.Delete(filePath);
-            }
+            this.reporterMock.Received(Quantity.Exactly(1));
         }
 
         [Fact]
         public void TestReadWarnings()
         {
-            var filePath = Path.GetRandomFileName();
-            try
-            {
-                File.WriteAllText(filePath, "{\"Foo\": \"One\", \"1\": \"One\", \" \": \"Blank\"}");
+            var additionalText = AdditionalTextMock(content: "{\"Foo\": \"One\", \"1\": \"One\", \" \": \"Blank\"}");
 
-                var reader = new JsonTranslationReader(this.reporterMock);
+            var reader = new JsonTranslationReader(this.reporterMock);
 
-                reader.Read(Path.Combine(filePath)).Count.ShouldBe(1);
-                this.reporterMock.Received(Quantity.Exactly(2));
-            }
-            finally
-            {
-                File.Delete(filePath);
-            }
+            reader.Read(additionalText).Count.ShouldBe(1);
+            this.reporterMock.Received(Quantity.Exactly(2));
         }
 
         [Fact]
         public void TestReadError()
         {
-            var filePath = Path.GetRandomFileName();
-            try
-            {
-                File.WriteAllText(filePath, "{\"ArrayValue\": [ 1, 2, 3 ]}");
+            var additionalText = AdditionalTextMock(content: "{\"ArrayValue\": [ 1, 2, 3 ]}");
+            var reader = new JsonTranslationReader(reporterMock);
 
-                var reader = new JsonTranslationReader(reporterMock);
+            reader.Read(additionalText).Count.ShouldBe(0);
+            
+            this.reporterMock.Received(Quantity.Exactly(1));
+        }
 
-                reader.Read(Path.Combine(filePath)).Count.ShouldBe(0);
-                this.reporterMock.Received(Quantity.Exactly(1));
-            }
-            finally
-            {
-                File.Delete(filePath);
-            }
+        private AdditionalText AdditionalTextMock(string path = null, string content = null)
+        {
+            var mock = Substitute.For<AdditionalText>();
+            path ??= Path.GetRandomFileName();
+            mock.Path.Returns(path);
+            if (content != null)
+                mock.GetText().Returns(SourceText.From(content));
+            return mock;
         }
     }
 }

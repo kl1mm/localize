@@ -1,5 +1,7 @@
 ﻿using System.Globalization;
+using System.Linq;
 using kli.Locales;
+using kli.Localize.Test.TestLocalizations;
 using Xunit;
 
 namespace kli.Localize.Test;
@@ -47,5 +49,12 @@ public class GeneratedCodeTest
         Assert.Equal(6, MyLocale.GetAll().Count);
         Assert.Single(MyLocale.GetAll(new CultureInfo("en-US")));
         Assert.Equal(6, MyLocale.GetAll(new CultureInfo("fr")).Count);
+    }
+
+    [Fact]
+
+    public void TestSructuredLocale()
+    {
+        Assert.Equal(7, StructuredLocale.GetAll().Count);
     }
 }

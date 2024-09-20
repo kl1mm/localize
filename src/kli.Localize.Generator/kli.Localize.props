@@ -3,5 +3,6 @@
     <ItemGroup>
         <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="NamespaceName"/>
         <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="ClassName"/>
+        <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="NeutralCulture"/>
     </ItemGroup>
 </Project>
