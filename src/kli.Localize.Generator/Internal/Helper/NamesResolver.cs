@@ -15,16 +15,18 @@ namespace kli.Localize.Generator.Internal.Helper
         public const string MetaDataNamespaceName = "NamespaceName";        
         public const string PropertyRootNamespace = "rootnamespace";
         public const string PropertyProjectDir = "projectdir";
+        public const string LocalizePropertyName = "Localize";
+        public const string LocalizeGroupName = "LocalizeFile";
 
         public string ResolveNeutralCulture()
         {
             optionsProvider.GetOptions(originFile)
-                .TryGetValue($"build_metadata.AdditionalFiles.{MetaDataNeutralCulture}", out var neutralCulture);
+                .TryGetValue($"build_metadata.{LocalizePropertyName}.{MetaDataNeutralCulture}", out var neutralCulture);
             return neutralCulture; //TODO: diagnostic error if not given?
         }
         public string ResolveGeneratedClassName()
         {
-            if (optionsProvider.GetOptions(originFile).TryGetValue($"build_metadata.AdditionalFiles.{MetaDataClassName}", out var className) && !string.IsNullOrWhiteSpace(className))
+            if (optionsProvider.GetOptions(originFile).TryGetValue($"build_metadata.{LocalizePropertyName}.{MetaDataClassName}", out var className) && !string.IsNullOrWhiteSpace(className))
                 return className;
             return PathHelper.FileNameWithoutCulture(originFile.Path);
         }
@@ -36,7 +38,7 @@ namespace kli.Localize.Generator.Internal.Helper
 
         public string ResolveNamespace()
         {
-            if (optionsProvider.GetOptions(originFile).TryGetValue($"build_metadata.AdditionalFiles.{MetaDataNamespaceName}", out var namespaceName) && !string.IsNullOrWhiteSpace(namespaceName))
+            if (optionsProvider.GetOptions(originFile).TryGetValue($"build_metadata.{LocalizePropertyName}.{MetaDataNamespaceName}", out var namespaceName) && !string.IsNullOrWhiteSpace(namespaceName))
                 return namespaceName;
 
             if (!optionsProvider.GlobalOptions.TryGetValue($"build_property.{PropertyRootNamespace}", out var rootNamespace))

@@ -20,10 +20,12 @@
     <ItemGroup>
         <ProjectReference Include="..\kli.Localize.Generator\kli.Localize.Generator.csproj" OutputItemType="Analyzer" />
 
-        <AdditionalFiles Include="TestLocalizations\Locale_*.json" NamespaceName="kli.Locales" ClassName="MyLocale" NeutralCulture="de" />
-        <AdditionalFiles Include="TestLocalizations\StructuredLocale_*.json" NeutralCulture="de" />
+        <Localize Include="TestLocalizations\Locale_*.json" NamespaceName="kli.Locales" ClassName="MyLocale" NeutralCulture="de" />
+        <Localize Include="TestLocalizations\StructuredLocale_*.json" /> 
+        <!-- TODO: show warning or better error? --> 
     </ItemGroup>
 
     <Import Project="..\kli.Localize.Generator\kli.Localize.props" />
+    <Import Project="..\kli.Localize.Generator\kli.Localize.targets" />
     
 </Project>

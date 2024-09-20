@@ -1,0 +1,7 @@
+﻿<Project InitialTargets="kli_Localize_AdditionalFiles">
+    <Target Name="kli_Localize_AdditionalFiles" BeforeTargets="GenerateMSBuildEditorConfigFileShouldRun">
+        <ItemGroup>
+            <AdditionalFiles Include="@(Localize)" LocalizeFile="true" />
+        </ItemGroup>
+    </Target>
+</Project>

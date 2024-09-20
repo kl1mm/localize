@@ -1,8 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Project>
     <ItemGroup>
-        <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="NamespaceName"/>
-        <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="ClassName"/>
-        <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="NeutralCulture"/>
+        <CompilerVisibleProperty Include="Localize" />
+        <CompilerVisibleItemMetadata Include="Localize" MetadataName="NamespaceName"/>
+        <CompilerVisibleItemMetadata Include="Localize" MetadataName="ClassName"/>
+        <CompilerVisibleItemMetadata Include="Localize" MetadataName="NeutralCulture"/>
+        <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="LocalizeFile"/>
     </ItemGroup>
 </Project>
