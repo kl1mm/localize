@@ -53,7 +53,7 @@ public class GeneratedCodeTest
 
     [Fact]
 
-    public void TestSructuredLocale()
+    public void TestStructuredLocale()
     {
         Assert.Equal(7, StructuredLocale.GetAll().Count);
     }

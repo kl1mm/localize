@@ -6,7 +6,9 @@
 // using kli.Localize.Generator;
 // using Microsoft.CodeAnalysis;
 // using Microsoft.CodeAnalysis.CSharp;
+// using Microsoft.CodeAnalysis.Diagnostics;
 // using Microsoft.CodeAnalysis.Text;
+// using NSubstitute;
 // using Shouldly;
 // using Xunit;
 //
@@ -14,37 +16,31 @@
 //
 // public class My : AdditionalText
 // {
-//     private readonly string _filePath;
-//     public My()
-//     {
-//         var localTestData = """
-//             {
-//                 "Errors": 
-//                 {
-//                     "FileNotFound": "Datei nicht gefunden",
-//                     "DivideByZero": "Durch Null geteilt"
-//                 },
-//                 "Warnings":{
-//                     "Caution": "Achtung"
-//                 },
-//                 "UI":{
-//                     "LabelOne": "Eins",
-//                     "LabelTwo": "Zwei",
-//                     "Login": {
-//                         "LabelUserName": "Benutzer",
-//                         "LabelPassword": "Passwort"
-//                     }
-//                 }
-//             }
-//             """;        
-//         this._filePath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "TestLocale.json");
-//         File.WriteAllText(this._filePath, localTestData);
-//     }
-//     
+//     private const string FileName = "TestLocale_de.json";
+//     private static readonly SourceText SourceText = SourceText.From("""
+//                                                                     {
+//                                                                         "Errors": 
+//                                                                         {
+//                                                                             "FileNotFound": "Datei nicht gefunden",
+//                                                                             "DivideByZero": "Durch Null geteilt"
+//                                                                         },
+//                                                                         "Warnings":{
+//                                                                             "Caution": "Achtung"
+//                                                                         },
+//                                                                         "UI":{
+//                                                                             "LabelOne": "Eins",
+//                                                                             "LabelTwo": "Zwei",
+//                                                                             "Login": {
+//                                                                                 "LabelUserName": "Benutzer",
+//                                                                                 "LabelPassword": "Passwort"
+//                                                                             }
+//                                                                         }
+//                                                                     }
+//                                                                     """);  
 //     public override SourceText GetText(CancellationToken cancellationToken = default) 
-//         => SourceText.From(File.ReadAllText(this._filePath));
+//         => SourceText;
 //
-//     public override string Path => this._filePath;
+//     public override string Path => FileName!;
 // }
 //
 // public class GeneratorTest
@@ -64,8 +60,12 @@
 //     }
 // }
 // ");
-//         var generator = new LocalizeCodeGenerator();
-//         GeneratorDriver driver = CSharpGeneratorDriver.Create([generator], [new My()]);
+//         var additionalText = new My();
+//         var otherAdditionaltextMock = Substitute.For<AdditionalText>();
+//         otherAdditionaltextMock.Path.Returns("doesNotMatterExceptFor.json");
+//         var generator = new LocalizeCodeGenerator().AsSourceGenerator();
+//         var configOptions = CreateAnalyzerConfigOptionsProviderMock(additionalText.Path,"C:\\project\\dir\\", "My.Project", "de");
+//         GeneratorDriver driver = CSharpGeneratorDriver.Create([generator], [additionalText, otherAdditionaltextMock]).WithUpdatedAnalyzerConfigOptions(configOptions);
 //         driver = driver.RunGeneratorsAndUpdateCompilation(inputCompilation, out var outputCompilation, out var diagnostics);
 //
 //         diagnostics.IsEmpty.ShouldBeTrue(); // there were no diagnostics created by the generators
@@ -86,4 +86,22 @@
 //             new[] { CSharpSyntaxTree.ParseText(source) },
 //             new[] { MetadataReference.CreateFromFile(typeof(Binder).GetTypeInfo().Assembly.Location) },
 //             new CSharpCompilationOptions(OutputKind.ConsoleApplication));
+//     
+//     internal AnalyzerConfigOptionsProvider CreateAnalyzerConfigOptionsProviderMock(string additionalTextPath, string projectDir, string rootNameSpace, string? neutralCulture = null)
+//     {
+//         var configOptionsMock = Substitute.For<AnalyzerConfigOptions>();
+//         configOptionsMock.TryGetValue("build_property.projectdir", out Arg.Any<string>()!)
+//             .Returns(x => { x[1] = projectDir; return true; });
+//         configOptionsMock.TryGetValue("build_property.rootnamespace", out Arg.Any<string>()!)
+//             .Returns(x => { x[1] = rootNameSpace; return true; });
+//         configOptionsMock.TryGetValue("build_metadata.AdditionalFiles.NeutralCulture", out Arg.Any<string>()!)
+//             .Returns(x => { x[1] = neutralCulture; return true; });
+//
+//         var providerMock = Substitute.For<AnalyzerConfigOptionsProvider>();
+//         providerMock.GetOptions(Arg.Is<AdditionalText>(at => at.Path == additionalTextPath))
+//             .Returns(configOptionsMock);
+//         providerMock.GlobalOptions.Returns(configOptionsMock);
+//
+//         return providerMock;
+//     }
 // }

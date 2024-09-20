@@ -1,36 +1,66 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using kli.Localize.Generator.Internal;
 using kli.Localize.Generator.Internal.Helper;
 using kli.Localize.Generator.Internal.Json;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace kli.Localize.Generator
 {
-    [Generator]
-    public class LocalizeCodeGenerator : ISourceGenerator
+    [Generator(LanguageNames.CSharp)]
+    public class LocalizeCodeGenerator : IIncrementalGenerator
     {
-        public void Initialize(GeneratorInitializationContext context)
-        {
-            // TODO: Run only if AdditionalFiles or one of the CultureFiles is changed
-        }
-
-        public void Execute(GeneratorExecutionContext context)
+        public void Initialize(IncrementalGeneratorInitializationContext ctx)
         {
             // #if DEBUG
             //             if (!System.Diagnostics.Debugger.IsAttached)
             //                 System.Diagnostics.Debugger.Launch();
             // #endif
-
-            var translationReader = new JsonTranslationReader(context.ReportDiagnostic);
-            var codeGenerator = new LocalizeCodeGeneratorCore();
-            var additionalFilesGroupedByFileNames = context.AdditionalFiles.Where(af => af.Path.EndsWith(".json", StringComparison.OrdinalIgnoreCase)).GroupBy(f => PathHelper.FileNameWithoutCulture(f.Path));
-            foreach (var group in additionalFilesGroupedByFileNames)
+            var assemblyNameProvider = ctx.CompilationProvider.Select(static (c, _) => c.AssemblyName);
+            var configOptionsProvider = ctx.AnalyzerConfigOptionsProvider;
+            var additionalTextsWithOptionsAndAssemblyName =
+                ctx.AdditionalTextsProvider
+                    .Where(static at => Path.GetExtension(at.Path) == ".json")
+                    .Combine(configOptionsProvider)
+                    .Where(static pair =>
+                    {
+                        var additionalText = pair.Left;
+                        var options = pair.Right;
+                        return options.GetOptions(additionalText)
+                            .TryGetValue($"build_metadata.AdditionalFiles.{NamesResolver.MetaDataNeutralCulture}",
+                                out var _);
+                    })
+                    .Select(static (pair, _) => pair.Left)
+                    .Collect()
+                    .Select(static (additionalTexts, _) =>
+                    {
+                        return additionalTexts.GroupBy(at =>
+                            PathHelper.FileNameWithoutCulture(at.Path));
+                    })
+                    .Combine(configOptionsProvider)
+                    .Combine(assemblyNameProvider);
+            
+            ctx.RegisterSourceOutput(additionalTextsWithOptionsAndAssemblyName, (spc, pipeline) =>
             {
-                var namesResolver = new NamesResolver(group.First(), context.Compilation.AssemblyName, context.AnalyzerConfigOptions);
-                var ctx = new GeneratorDataBuilder(group.ToList(), namesResolver, translationReader).Build();
-                context.AddSource(ctx.GeneratedFileName, codeGenerator.CreateClass(ctx));
-            }
+                var assemblyName = pipeline.Right;
+                var optionsProvider = pipeline.Left.Right;
+                foreach (var additionalTexts in pipeline.Left.Left)
+                {
+                    spc.ReportDiagnostic(Diagnostic.Create(
+                        new DiagnosticDescriptor($"SGL000FOO", "kli.Localize.Generator", 
+                            $"{additionalTexts.First().Path}"
+                            , "Source Generators", DiagnosticSeverity.Warning, true),
+                        Location.None));
+                    var codeGenerator = new LocalizeCodeGeneratorCore();
+                    var translationReader = new JsonTranslationReader(spc.ReportDiagnostic);
+                    var namesResolver = new NamesResolver(additionalTexts.First(), assemblyName, optionsProvider);
+                    var generatorData = new GeneratorDataBuilder(additionalTexts.ToList(), namesResolver, translationReader).Build();
+                    spc.AddSource(generatorData.GeneratedFileName, codeGenerator.CreateClass(generatorData));
+                }
+            });
         }
     }
 }
