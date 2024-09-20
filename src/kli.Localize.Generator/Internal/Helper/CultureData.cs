@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Microsoft.CodeAnalysis;
 
 namespace kli.Localize.Generator.Internal.Helper
 {
@@ -14,24 +16,23 @@ namespace kli.Localize.Generator.Internal.Helper
 
         private CultureData() { }
 
-        public static IReadOnlyList<CultureData> Initialize(string filePath, ITranslationReader translationReader)
+        public static IReadOnlyList<CultureData> Initialize(string neutralCulture, IReadOnlyList<AdditionalText> additionalTexts, ITranslationReader translationReader)
         {
-            var searchDir = Path.GetDirectoryName(filePath)!;
-            var fileName = Path.GetFileNameWithoutExtension(filePath);
-            return Directory.GetFiles(searchDir, $"{fileName}*{Path.GetExtension(filePath)}")
-                .Select(cfp => ResolveCulture(cfp, translationReader)).ToList();
+            return additionalTexts.Select(at => ResolveCulture(neutralCulture, at, translationReader)).ToList();
         }
         
-        private static CultureData ResolveCulture(string cultureFilePath, ITranslationReader translationReader)
+        private static CultureData ResolveCulture(string neutralCulture, AdditionalText additionalText, ITranslationReader translationReader)
         {
-            var cultureId = Path.GetFileNameWithoutExtension(cultureFilePath).Split('_').Skip(1).LastOrDefault()
-                ?? InvariantKeyName;
+            var cultureId = Path.GetFileNameWithoutExtension(additionalText.Path).Split('_').Skip(1).LastOrDefault();
+
+            if (cultureId == neutralCulture)
+                cultureId = InvariantKeyName;
             
             return new()
             {
                 Key = cultureId, 
                 NormalizedKey = NormalizeCultureIdentifier(cultureId), 
-                Translations = translationReader.Read(cultureFilePath)
+                Translations = translationReader.Read(additionalText)
             };
         }
 

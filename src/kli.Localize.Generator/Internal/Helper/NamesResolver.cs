@@ -5,24 +5,28 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace kli.Localize.Generator.Internal.Helper
 {
-    internal class NamesResolver
+    internal class NamesResolver(
+        AdditionalText originFile,
+        string fallBackRootNamespace,
+        AnalyzerConfigOptionsProvider optionsProvider)
     {
-        private readonly AdditionalText originFile;
-        private readonly string fallBackRootNamespace;
-        private readonly AnalyzerConfigOptionsProvider optionsProvider;
+        public const string MetaDataNeutralCulture = "NeutralCulture";
+        public const string MetaDataClassName = "ClassName";
+        public const string MetaDataNamespaceName = "NamespaceName";        
+        public const string PropertyRootNamespace = "rootnamespace";
+        public const string PropertyProjectDir = "projectdir";
 
-        public NamesResolver(AdditionalText originFile, string fallBackRootNamespace, AnalyzerConfigOptionsProvider optionsProvider)
+        public string ResolveNeutralCulture()
         {
-            this.originFile = originFile;
-            this.fallBackRootNamespace = fallBackRootNamespace;
-            this.optionsProvider = optionsProvider;
+            optionsProvider.GetOptions(originFile)
+                .TryGetValue($"build_metadata.AdditionalFiles.{MetaDataNeutralCulture}", out var neutralCulture);
+            return neutralCulture; //TODO: diagnostic error if not given?
         }
-
         public string ResolveGeneratedClassName()
         {
-            if (this.optionsProvider.GetOptions(this.originFile).TryGetValue("build_metadata.AdditionalFiles.ClassName", out var className) && !string.IsNullOrWhiteSpace(className))
+            if (optionsProvider.GetOptions(originFile).TryGetValue($"build_metadata.AdditionalFiles.{MetaDataClassName}", out var className) && !string.IsNullOrWhiteSpace(className))
                 return className;
-            return Path.GetFileNameWithoutExtension(this.originFile.Path);
+            return PathHelper.FileNameWithoutCulture(originFile.Path);
         }
         
         public string ResolveGeneratedFileName() 
@@ -30,16 +34,16 @@ namespace kli.Localize.Generator.Internal.Helper
 
         public string ResolveNamespace()
         {
-            if (this.optionsProvider.GetOptions(this.originFile).TryGetValue("build_metadata.AdditionalFiles.NamespaceName", out var namespaceName) && !string.IsNullOrWhiteSpace(namespaceName))
+            if (optionsProvider.GetOptions(originFile).TryGetValue($"build_metadata.AdditionalFiles.{MetaDataNamespaceName}", out var namespaceName) && !string.IsNullOrWhiteSpace(namespaceName))
                 return namespaceName;
 
-            if (!this.optionsProvider.GlobalOptions.TryGetValue("build_property.rootnamespace", out var rootNamespace))
-                rootNamespace = this.fallBackRootNamespace;
+            if (!optionsProvider.GlobalOptions.TryGetValue($"build_property.{PropertyRootNamespace}", out var rootNamespace))
+                rootNamespace = fallBackRootNamespace;
 
-            if (this.optionsProvider.GlobalOptions.TryGetValue("build_property.projectdir", out var projectDir))
+            if (optionsProvider.GlobalOptions.TryGetValue($"build_property.{PropertyProjectDir}", out var projectDir))
             {
                 var fromPath = this.EnsurePathEndsWithDirectorySeparator(projectDir);
-                var toPath = this.EnsurePathEndsWithDirectorySeparator(Path.GetDirectoryName(this.originFile.Path));
+                var toPath = this.EnsurePathEndsWithDirectorySeparator(Path.GetDirectoryName(originFile.Path));
                 var relativPath = this.GetRelativePath(fromPath, toPath);
 
                 return $"{rootNamespace}.{relativPath.Replace(Path.DirectorySeparatorChar, '.')}".TrimEnd('.');

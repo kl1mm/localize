@@ -4,23 +4,23 @@ using System.IO;
 using kli.Localize.Generator.Internal.Helper;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.Text;
 using Newtonsoft.Json;
 
 namespace kli.Localize.Generator.Internal.Json
 {
     internal class JsonTranslationReader(Action<Diagnostic> reportDiagnostic) : ITranslationReader
     {
-        public TranslationData Read(string filePath)
+        public TranslationData Read(AdditionalText text)
         {
             try
             {
-                using var fileStream = new FileStream(filePath, FileMode.Open);
-                var reader = new JsonTextReader(new StreamReader(fileStream));
-                return this.ReadCore(filePath, reader);
+                var reader = new JsonTextReader(new StringReader(text.GetText()!.ToString())); //TODO bang
+                return this.ReadCore(text.Path, reader);
             }
             catch (JsonReaderException ex)
             {
-                reportDiagnostic.ReportInvalidFileFormat(filePath, ex);
+                reportDiagnostic.ReportInvalidFileFormat(text.Path, ex);
             }
 
             return new TranslationData();
@@ -28,23 +28,23 @@ namespace kli.Localize.Generator.Internal.Json
 
         private TranslationData ReadCore(string filePath, JsonTextReader reader)
         {
-            var hierachie = new Stack<TranslationData>([new TranslationData()]);
+            var hierachy = new Stack<TranslationData>([new TranslationData()]);
             var propertyName = string.Empty;
             while (reader.Read())
             {
                 switch (reader.TokenType)
                 {
                     case JsonToken.StartObject:
-                        HandleStartObject(reader, hierachie, propertyName);
+                        HandleStartObject(reader, hierachy, propertyName);
                         break;
                     case JsonToken.PropertyName:
                         this.HandleProperty(filePath, reader, ref propertyName);
                         break;
                     case JsonToken.String:
-                        hierachie.Peek().Add(propertyName, reader.Value!.ToString());
+                        hierachy.Peek().Add(propertyName, reader.Value!.ToString());
                         break;
                     case JsonToken.EndObject:
-                        HandleEndObject(reader, hierachie);
+                        HandleEndObject(reader, hierachy);
                         break;
                     case JsonToken.None:
                     case JsonToken.Comment:
@@ -57,13 +57,13 @@ namespace kli.Localize.Generator.Internal.Json
                 }
             }
 
-            return hierachie.Pop();
+            return hierachy.Pop();
         }
 
-        private static void HandleEndObject(JsonTextReader reader, Stack<TranslationData> hierachie)
+        private static void HandleEndObject(JsonTextReader reader, Stack<TranslationData> hierarchy)
         {
             if (reader.Depth > 0)
-                hierachie.Pop();
+                hierarchy.Pop();
         }
 
         private void HandleProperty(string filePath, JsonTextReader reader, ref string propertyName)

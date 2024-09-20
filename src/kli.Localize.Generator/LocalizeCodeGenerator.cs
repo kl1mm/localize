@@ -24,11 +24,11 @@ namespace kli.Localize.Generator
 
             var translationReader = new JsonTranslationReader(context.ReportDiagnostic);
             var codeGenerator = new LocalizeCodeGeneratorCore();
-            var additionalFiles = context.AdditionalFiles.Where(af => af.Path.EndsWith(".json", StringComparison.OrdinalIgnoreCase));
-            foreach (var file in additionalFiles)
+            var additionalFilesGroupedByFileNames = context.AdditionalFiles.Where(af => af.Path.EndsWith(".json", StringComparison.OrdinalIgnoreCase)).GroupBy(f => PathHelper.FileNameWithoutCulture(f.Path));
+            foreach (var group in additionalFilesGroupedByFileNames)
             {
-                var namesResolver = new NamesResolver(file, context.Compilation.AssemblyName, context.AnalyzerConfigOptions);
-                var ctx = new GeneratorDataBuilder(file, namesResolver, translationReader).Build();
+                var namesResolver = new NamesResolver(group.First(), context.Compilation.AssemblyName, context.AnalyzerConfigOptions);
+                var ctx = new GeneratorDataBuilder(group.ToList(), namesResolver, translationReader).Build();
                 context.AddSource(ctx.GeneratedFileName, codeGenerator.CreateClass(ctx));
             }
         }
