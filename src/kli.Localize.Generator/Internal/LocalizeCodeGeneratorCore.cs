@@ -12,56 +12,61 @@ namespace kli.Localize.Generator.Internal
 {
     internal class LocalizeCodeGeneratorCore
     {
-        public SourceText CreateClass(GeneratorData generatorData)
-        {
-            var sourceAsString = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.ParseName(generatorData.Namespace))
-                .WithLeadingTrivia(SyntaxFactory.Comment(this.CreateFileHeader()))
+        public SourceText CreateClass(GeneratorData generatorData) =>
+            SyntaxFactory.NamespaceDeclaration(SyntaxFactory.ParseName(generatorData.Namespace))
+                .WithLeadingTrivia(Trivia.CreateFileHeader(this.GetType().Assembly.GetName().Name))
                 .AddUsings(SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("System")))
                 .AddUsings(SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("System.Globalization")))
                 .AddUsings(SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("System.Collections.Generic")))
-                .AddUsings(SyntaxFactory.UsingDirective(SyntaxFactory.NameEquals(SyntaxFactory.IdentifierName("Translations")), SyntaxFactory.ParseName("System.Collections.Generic.Dictionary<string, string>")))
+                .AddUsings(SyntaxFactory.UsingDirective(
+                    SyntaxFactory.NameEquals(SyntaxFactory.IdentifierName("Translations")),
+                    SyntaxFactory.ParseName("System.Collections.Generic.Dictionary<string, string>")))
                 .AddMembers(SyntaxFactory.ClassDeclaration(generatorData.GeneratedClassName)
                     .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
                     .AddModifiers(SyntaxFactory.Token(SyntaxKind.SealedKeyword))
                     .AddModifiers(SyntaxFactory.Token(SyntaxKind.PartialKeyword))
+                    .WithLeadingTrivia(Trivia.CreateClassHeader(generatorData.FileName))
                     .AddMembers(this.LocalizationProviderProperty())
                     .AddMembers(this.GetAllMethod())
                     .AddMembers(this.GetStringMethod())
                     .AddMembers(this.CreateLocalizationProviderClass(generatorData))
-                    .AddMembers(this.ProjectTranslationsToMemberDeclarations(generatorData.InvariantTranslationData)))
+                    .AddMembers(this.ProjectTranslationsToMemberDeclarations(generatorData.InvariantTranslationData,
+                        generatorData.FileName)))
                 .NormalizeWhitespace()
-                .ToFullString();
-
-            return SourceText.From(sourceAsString, Encoding.UTF8);
-        }
+                .GetText(Encoding.UTF8);
 
         private MemberDeclarationSyntax LocalizationProviderProperty()
             => SyntaxFactory.ParseMemberDeclaration("private static readonly LocalizationProvider provider = new LocalizationProvider();");
 
         private MemberDeclarationSyntax GetAllMethod()
-            => SyntaxFactory.ParseMemberDeclaration("public static IDictionary<string, string> GetAll(CultureInfo cultureInfo = null) => provider.GetValues(cultureInfo ?? CultureInfo.CurrentUICulture);");
+            => SyntaxFactory.ParseMemberDeclaration("public static IDictionary<string, string> GetAll(CultureInfo cultureInfo = null) => provider.GetValues(cultureInfo ?? CultureInfo.CurrentUICulture);")?
+                .WithLeadingTrivia(Trivia.CreateGetAllDocCommentTrivia());
 
         private MemberDeclarationSyntax GetStringMethod()
-            => SyntaxFactory.ParseMemberDeclaration("public static string GetString(string key, CultureInfo cultureInfo = null) => provider.GetValue(key, cultureInfo ?? CultureInfo.CurrentUICulture);");
+            => SyntaxFactory.ParseMemberDeclaration("public static string GetString(string key, CultureInfo cultureInfo = null) => provider.GetValue(key, cultureInfo ?? CultureInfo.CurrentUICulture);")?
+                .WithLeadingTrivia(Trivia.CreateGetStringDocCommentTrivia());
 
-        private MemberDeclarationSyntax[] ProjectTranslationsToMemberDeclarations(TranslationData translationData, string parentKey = "")
+        private MemberDeclarationSyntax[] ProjectTranslationsToMemberDeclarations(TranslationData translationData, string fileName, string parentKey = "")
         {
             return (from translation in translationData
-                let key = string.IsNullOrEmpty(parentKey) ? translation.Key : $"{parentKey}::{translation.Key}"
+                let key = string.IsNullOrEmpty(parentKey) ? translation.Key : StringHelper.Keys.NestedKey(parentKey,translation.Key)
                 select translation.Value switch
                 {
                     string value => this.CreateTranslationAccessProperty(translation.Key, key, value),
-                    TranslationData child => this.CreateNestedTranslationAccessClass(translation.Key, key, child),
+                    TranslationData child => this.CreateNestedTranslationAccessClass(translation.Key, key, fileName, child),
                     _ =>  throw new ArgumentOutOfRangeException(nameof(translation.Value))
                 }).ToArray();
         }
 
-        private MemberDeclarationSyntax CreateNestedTranslationAccessClass(string className, string translationKey, TranslationData next)
+
+
+        private MemberDeclarationSyntax CreateNestedTranslationAccessClass(string className, string translationKey, string fileName, TranslationData next)
         {
           return SyntaxFactory.ClassDeclaration(className)
                 .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
                 .AddModifiers(SyntaxFactory.Token(SyntaxKind.StaticKeyword))
-                .AddMembers(this.ProjectTranslationsToMemberDeclarations(next, translationKey));
+                .WithLeadingTrivia(Trivia.CreateNestedClassHeader(fileName, translationKey))
+                .AddMembers(this.ProjectTranslationsToMemberDeclarations(next, fileName, translationKey));
         }     
         
         private MemberDeclarationSyntax CreateTranslationAccessProperty(string propertyName, string translationKey, string translationValue)
@@ -72,7 +77,7 @@ namespace kli.Localize.Generator.Internal
                 """;
 
             return SyntaxFactory.ParseMemberDeclaration(member)!
-                .WithLeadingTrivia(SyntaxFactory.Comment(this.CreateMemberHeader(translationValue)));
+                .WithLeadingTrivia(Trivia.CreateMemberHeader(translationValue));
         }
         
         private ClassDeclarationSyntax CreateLocalizationProviderClass(GeneratorData context)
@@ -133,7 +138,7 @@ namespace kli.Localize.Generator.Internal
                 {
                     var entries = cd.Translations
                         .Flatten()
-                        .Select(t => $"{{ \"{t.Key}\", \"{EscapeValue(t.Value)}\" }},");
+                        .Select(t => $"{{ \"{t.Key}\", \"{StringHelper.EscapeValue(t.Value)}\" }},");
                     
                     return $@"private static readonly Translations {cd.NormalizedKey} = new()
                             {{
@@ -157,31 +162,6 @@ namespace kli.Localize.Generator.Internal
                             }};";
 
             return SyntaxFactory.ParseMemberDeclaration(source);
-        }
-
-        private string CreateMemberHeader(string value) => $"///<summary>Similar to: {EscapeValue(value)}</summary>";
-
-        private string CreateFileHeader()
-        {
-            return string.Format(@"//------------------------------------------------------------------------------
-// <auto-generated>
-//     This code was generated by {0}.
-//
-//     Changes to this file may cause incorrect behavior and will be lost if
-//     the code is regenerated.
-// </auto-generated>
-//------------------------------------------------------------------------------"
-            , this.GetType().Assembly.GetName().Name);
-        }
-
-        private static string EscapeValue(string input)
-        {
-            return input
-                .Replace("\\", "\\\\")  // Escape Backslashes
-                .Replace("\"", "\\\"")  // Escape double quotes
-                .Replace("\n", "\\n")   // Escape newline
-                .Replace("\r", "\\r")   // Escape carriage return
-                .Replace("\t", "\\t");  // Escape tab
         }
     }
 }

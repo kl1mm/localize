@@ -12,6 +12,7 @@ internal class GeneratorDataBuilder(AdditionalText originFile,
             GeneratedClassName = namesResolver.ResolveGeneratedClassName(),
             GeneratedFileName = namesResolver.ResolveGeneratedFileName(),
             Namespace = namesResolver.ResolveNamespace(),
+            FileName = namesResolver.ResolveFileName(),
             CultureData = CultureData.Initialize(originFile.Path, translationReader),
         };
     }

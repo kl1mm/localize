@@ -2,19 +2,22 @@
     "TestKey": "Neutral",
     "OnlyHere": "Nür hiär",
     "SpecialChars": "\" \\ @ ß \r\n {0}",
-    "1": "One",                     // -> skiped with warning
-    " ": "Blank",                   // -> skiped with warning
-    "class": "keywords1",            // -> skiped with warning
-    "true": "type",                 // -> skiped with warning
+    "1": "One",                     // -> skipped with warning
+    " ": "Blank",                   // -> skipped with warning
+    "class": "keywords1",            // -> skipped with warning
+    "true": "type",                 // -> skipped with warning
 
     "Sub":{
         "SubText": "Abc",
-        "SubText2": "Xyz"
+        "SubText2": "Xyz",
+        "DoublyNested": {
+            "Something": "Something"
+        }
     },
     
-    "NumberValue": 4.2,             // -> skiped with warning
-    "BoolValue": true,              // -> skiped with warning
+    "NumberValue": 4.2,             // -> skipped with warning
+    "BoolValue": true,              // -> skipped with warning
     //"ObjectValue": { "A": "3" }   // -> generation error 
     //"ArrayValue": [ 1, 2, 3 ],    // -> generation error
-    "NullValue": null               // -> skiped with warning
+    "NullValue": null               // -> skipped with warning
 }

@@ -12,7 +12,7 @@ namespace kli.Localize.Generator.Internal.Helper
             var result = new Dictionary<string, string>();
             foreach (var kvp in translationData)
             {
-                var key = string.IsNullOrEmpty(parentKey) ? kvp.Key : $"{parentKey}::{kvp.Key}";
+                var key = string.IsNullOrEmpty(parentKey) ? kvp.Key : StringHelper.Keys.NestedKey(parentKey, kvp.Key);
                 if (kvp.Value is TranslationData nested)
                 {
                     foreach (var nestedKvp in this.FlattenCore(nested, key)) 

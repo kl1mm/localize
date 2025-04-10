@@ -44,8 +44,8 @@ public class GeneratedCodeTest
     [Fact]
     public void TestGetAll()
     {
-        Assert.Equal(5, MyLocale.GetAll().Count);
-        Assert.Equal(1, MyLocale.GetAll(new CultureInfo("en-US")).Count);
-        Assert.Equal(5, MyLocale.GetAll(new CultureInfo("fr")).Count);
+        Assert.Equal(6, MyLocale.GetAll().Count);
+        Assert.Single(MyLocale.GetAll(new CultureInfo("en-US")));
+        Assert.Equal(6, MyLocale.GetAll(new CultureInfo("fr")).Count);
     }
 }

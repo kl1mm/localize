@@ -11,6 +11,8 @@ namespace kli.Localize.Generator.Internal.Helper
         
         public string Namespace { get; set; }
         public string GeneratedFileName { get; set; }
+        
+        public string FileName { get; set; }
         public string GeneratedClassName { get; set; }
     }
 }

@@ -24,6 +24,8 @@ namespace kli.Localize.Generator.Internal.Helper
                 return className;
             return Path.GetFileNameWithoutExtension(this.originFile.Path);
         }
+
+        public string ResolveFileName() => Path.GetFileName(this.originFile.Path);
         
         public string ResolveGeneratedFileName() 
             => $"{this.ResolveGeneratedClassName()}.g.cs";
