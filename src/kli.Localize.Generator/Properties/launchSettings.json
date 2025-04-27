@@ -1,0 +1,9 @@
+{
+    "$schema": "https://json.schemastore.org/launchsettings.json",
+    "profiles": {
+        "Generators": {
+            "commandName": "DebugRoslynComponent",
+            "targetProject": "../kli.Localize.Test/kli.Localize.Test.csproj"
+        }
+    }
+}
