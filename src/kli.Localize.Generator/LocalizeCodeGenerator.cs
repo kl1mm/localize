@@ -31,11 +31,11 @@ namespace kli.Localize.Generator
                         var options = pair.Right;
                         var isLocalizeFile = options.GetOptions(additionalText)
                             .TryGetValue($"build_metadata.AdditionalFiles.{NamesResolver.LocalizeGroupName}",
-                                out var _);
+                                out var localizeFileMetaData) && localizeFileMetaData == "true";
                         var hasNeutralCulture = options.GetOptions(additionalText)
                             .TryGetValue($"build_metadata.{NamesResolver.LocalizePropertyName}.{NamesResolver.MetaDataNeutralCulture}",
                                 out var neutralCulture);
-                        return isLocalizeFile && hasNeutralCulture && !string.IsNullOrWhiteSpace(neutralCulture);
+                        return isLocalizeFile && hasNeutralCulture && !string.IsNullOrWhiteSpace(neutralCulture); //TODO: move to missing neutralculture to (error?) diagnostic instead of ignoring it
                     })
                     .Select(static (pair, _) => pair.Left)
                     .Collect()

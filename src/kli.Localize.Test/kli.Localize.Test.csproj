@@ -21,7 +21,7 @@
         <ProjectReference Include="..\kli.Localize.Generator\kli.Localize.Generator.csproj" OutputItemType="Analyzer" />
 
         <Localize Include="TestLocalizations\Locale_*.json" NamespaceName="kli.Locales" ClassName="MyLocale" NeutralCulture="de" />
-        <Localize Include="TestLocalizations\StructuredLocale_*.json" /> 
+        <Localize Include="TestLocalizations\StructuredLocale_*.json" NeutralCulture="de"/> 
         <!-- TODO: show warning or better error? --> 
     </ItemGroup>
 
