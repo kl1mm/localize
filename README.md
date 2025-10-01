@@ -23,21 +23,24 @@ Example:
 ```json
 {
     "SampleText": "FooBar",
-    "Other": "Text42"
+    "Other": "Text42",
+    "NestedItems": {
+      "Are": "also supported"
+    }
 }
 ```
 
 Name your localization files, including the culture according to the pattern: `<FileName>_<CultureInfo.Name>.json` (e.g. `Locale_de.json`). 
 For other cultures follow the same pattern (e.g. `Locale_en-US.json` for American English or `Locale_en.json` for English).  
 You have to specify which given culture is the neutral culture (the fallback used if there is no localization found for a specific culture)
-via the `NeutralCulture` attribute on the `AdditionalFiles` element.
+via the `NeutralCulture` attribute on the `Localize` element.
 
 ![locale_files image][locale_files]
 
 ### Add json files to csproj
 
-In an `ItemGroup` in your csproj file add an `AdditionFiles` element for **each localization** json file, include other cultures via glob pattern. 
-Set the `Include` attribute to the path of the file and specify the neutral culture via the `DefaultCulture` attribute
+In an `ItemGroup` in your csproj file add an `Localize` element for **each localization** json file, include other cultures via glob pattern. 
+Set the `Include` attribute to the path of the file and specify the neutral culture via the `NeutralCulture` attribute
 
 Example:
 
@@ -46,13 +49,13 @@ Example:
     <ItemGroup>
         <PackageReference Include="kli.Localize" Version="1.0.*" />
 
-        <AdditionalFiles Include="TestLocalizations\Locale_*.json" DefaultCulture="en"/>
+        <Localize Include="TestLocalizations\Locale_*.json" NeutralCulture="en"/>
     </ItemGroup>
 </Project>
 ```
 
-This means: if you have a `Locale_en.json` and a `Locale_en-US.json` add `Locale_*.json` as `<AdditionalFiles>`. And specify either `en` or `en_US` as `NeutralCulture`.  
-Add other files the same way in another `AdditionalFiles` element.
+This means: if you have a `Locale_en.json` and a `Locale_en-US.json` add `Locale_*.json` as `<Localize>`, and specify either `en` or `en_US` as `NeutralCulture`.  
+Add other files the same way in another `Localize` element.
 
 ### Use it in your code
 
@@ -152,74 +155,16 @@ Access is based on [CultureInfo.CurrentUICulture](https://docs.microsoft.com/en-
 The namespace is generated using the following pattern:  
 `rootnamespace + relative directory structure`  
 
-Since v0.8 this behaviour can be overriden [see 'From version 0.8'](#From version 0.8)
+This behaviour can be overridden with the `NamespaceName` attribute on the `Localize` element.
 
-## Version Changes
+### ClassName
 
-### From version 1.0
+The default class name in the generated code is `Locale`.
 
-#### BREAKING - Ignore none JSON-String/Object values
-All properties that are not string or object will be ignored. 
-```json
-{
-    "Number": 4.2,
-    "Bool": true,
-    "Null": null,
-    "Array": [1,2,3]
-}
-```
+This behaviour can be overridden with the `ClassName` attribute on the `Localize` element.
 
-#### [Add Support for Nested Classes #8](https://github.com/kl1mm/localize/issues/8)
-It is now possible to use JSON objects in the localization files.
-During generation, the structure is mapped as a nested class for access
 
-```json
-{
-    "SomeText": "some text",
-    "Sub": 
-    {
-        "FileNotFound": "Not found",
-        "DivideByZero": "x / zero"
-    },
-    "UI":{
-        "LabelOne": "One",
-        "LabelTwo": "Two",
-        "Login": {
-            "LabelUserName": "User",
-            "LabelPassword": "Pass"
-        }
-    }
-}
-```
-#### Improved Diagnostics
- - SGL0001: InvalidJsonFileFormat - `<JsonReaderException.Message>`
- - SGL0002: InvalidJsonPropertyName - `Json property key must be a valid C# identifier`
- - SGL0003: InvalidJsonTokenType - `Json property value must be an object or a string`
-
-All diagnostics came with LinePostion (linenumber & column)
-
-### From version 0.8
-
-It is now possible to override the namespace and the class/file name that will be generated:
-```xml
-<Project Sdk="Microsoft.NET.Sdk">
-    <ItemGroup>
-        <PackageReference Include="kli.Localize" Version="0.8.*" />
-
-        <AdditionalFiles Include="Localizations\Locale.json" 
-                         NamespaceName="Namespace.Of.Your.Choice"
-                         ClassName="MyClassName" />
-    </ItemGroup>
-</Project>
-```
-From which the following is generated:
-```csharp
-namespace Namespace.Of.Your.Choice
-{
-    ...
-    public sealed class MyClassName {
-    ...
-```
+## [Changelog](CHANGELOG.md)
 
 ## Help! Why is no code generated?
 
