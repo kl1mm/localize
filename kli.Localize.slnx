@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path=".github/workflows/dotnet.yml" />
+    <File Path=".gitignore" />
+    <File Path="README.md" />
+    <File Path="version.json" />
+  </Folder>
+  <Project Path="example/kli.Localize.Example/kli.Localize.Example.csproj" />
+  <Project Path="src/kli.Localize.Generator/kli.Localize.Generator.csproj" />
+  <Project Path="src/kli.Localize.Test/kli.Localize.Test.csproj" />
+</Solution>
