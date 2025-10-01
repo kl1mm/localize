@@ -10,4 +10,4 @@ public static class PathHelper
         var fileName = Path.GetFileNameWithoutExtension(path);
         return fileName.Substring(0, fileName.LastIndexOf('_'));
     }
-}
+} 

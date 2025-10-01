@@ -32,17 +32,23 @@ namespace kli.Localize.Generator
                         var isLocalizeFile = options.GetOptions(additionalText)
                             .TryGetValue($"build_metadata.AdditionalFiles.{NamesResolver.LocalizeGroupName}",
                                 out var localizeFileMetaData) && localizeFileMetaData == "true";
+                        return isLocalizeFile;
+                    })
+                    .Select(static (pair, _) =>
+                    {
+                        var additionalText = pair.Left;
+                        var options = pair.Right;
                         var hasNeutralCulture = options.GetOptions(additionalText)
                             .TryGetValue($"build_metadata.{NamesResolver.LocalizePropertyName}.{NamesResolver.MetaDataNeutralCulture}",
                                 out var neutralCulture);
-                        return isLocalizeFile && hasNeutralCulture && !string.IsNullOrWhiteSpace(neutralCulture); //TODO: move to missing neutralculture to (error?) diagnostic instead of ignoring it
+                        ;
+                        return (additionalText: pair.Left, hasNeutralCulture: hasNeutralCulture && !string.IsNullOrWhiteSpace(neutralCulture));
                     })
-                    .Select(static (pair, _) => pair.Left)
                     .Collect()
-                    .Select(static (additionalTexts, _) =>
+                    .Select(static (additionalTextsWithNeutralCultureInfo, _) =>
                     {
-                        return additionalTexts.GroupBy(at =>
-                            PathHelper.FileNameWithoutCulture(at.Path));
+                        return additionalTextsWithNeutralCultureInfo.GroupBy(at =>
+                            PathHelper.FileNameWithoutCulture(at.additionalText.Path));
                     })
                     .Combine(configOptionsProvider)
                     .Combine(assemblyNameProvider);
@@ -53,15 +59,16 @@ namespace kli.Localize.Generator
                 var optionsProvider = pipeline.Left.Right;
                 foreach (var additionalTexts in pipeline.Left.Left)
                 {
-                    spc.ReportDiagnostic(Diagnostic.Create(
-                        new DiagnosticDescriptor($"SGL000FOO", "kli.Localize.Generator", 
-                            $"{additionalTexts.First().Path}"
-                            , "Source Generators", DiagnosticSeverity.Warning, true),
-                        Location.None));
+                    if (!additionalTexts.First().hasNeutralCulture)
+                    {
+                        var foo = optionsProvider.GetOptions(additionalTexts.First().additionalText).Keys;
+                        DiagnosticsExtensions.ReportMissingNeutralCulture(spc.ReportDiagnostic, additionalTexts.First().additionalText);
+                        continue;
+                    }
                     var codeGenerator = new LocalizeCodeGeneratorCore();
                     var translationReader = new JsonTranslationReader(spc.ReportDiagnostic);
-                    var namesResolver = new NamesResolver(additionalTexts.First(), assemblyName, optionsProvider);
-                    var generatorData = new GeneratorDataBuilder(additionalTexts.ToList(), namesResolver, translationReader).Build();
+                    var namesResolver = new NamesResolver(additionalTexts.First().additionalText, assemblyName, optionsProvider);
+                    var generatorData = new GeneratorDataBuilder(additionalTexts.Select(t => t.additionalText).ToList(), namesResolver, translationReader).Build();
                     spc.AddSource(generatorData.GeneratedFileName, codeGenerator.CreateClass(generatorData));
                 }
             });

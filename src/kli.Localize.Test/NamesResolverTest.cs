@@ -134,19 +134,19 @@ namespace kli.Localize.Test
                     ci[1] = projectDir;
                     return !string.IsNullOrEmpty(projectDir);
                 });
-            optionsMock.TryGetValue($"build_metadata.AdditionalFiles.{NamesResolver.MetaDataNamespaceName}", out Arg.Any<string>())
+            optionsMock.TryGetValue($"build_metadata.Localize.{NamesResolver.MetaDataNamespaceName}", out Arg.Any<string>())
                 .Returns(ci =>
                 {
                     ci[1] = nameSpaceName;
                     return !string.IsNullOrEmpty(nameSpaceName);
                 });
-            optionsMock.TryGetValue($"build_metadata.AdditionalFiles.{NamesResolver.MetaDataNeutralCulture}", out Arg.Any<string>())
+            optionsMock.TryGetValue($"build_metadata.Localize.{NamesResolver.MetaDataNeutralCulture}", out Arg.Any<string>())
                 .Returns(ci =>
                 {
                     ci[1] = neutralCulture;
                     return !string.IsNullOrEmpty(neutralCulture);
                 });
-            optionsMock.TryGetValue($"build_metadata.AdditionalFiles.{NamesResolver.MetaDataClassName}", out Arg.Any<string>())
+            optionsMock.TryGetValue($"build_metadata.Localize.{NamesResolver.MetaDataClassName}", out Arg.Any<string>())
                 .Returns(ci =>
                 {
                     ci[1] = className;

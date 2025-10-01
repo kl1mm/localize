@@ -159,7 +159,7 @@ This behaviour can be overridden with the `NamespaceName` attribute on the `Loca
 
 ### Class naming
 
-The default class name in the generated code is `Locale`.
+The default class name in the generated code is the filename without the culture.
 
 This behaviour can be overridden with the `ClassName` attribute on the `Localize` element.
 

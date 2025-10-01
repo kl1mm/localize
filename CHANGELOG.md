@@ -4,7 +4,7 @@
 
 #### BREAKING - New `Localize` element
 
-The json files are no longer specified via `AdditionalFiles` but rather via `Localize`
+The json files are no longer specified via `AdditionalFiles` but rather via `Localize` element.
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
     <ItemGroup>
@@ -18,7 +18,10 @@ The json files are no longer specified via `AdditionalFiles` but rather via `Loc
 </Project>
 ```
 
-Neutral culture is no longer assumed but needs to be specified via the `NeutralCulture`-Attribute
+#### Added new diagnostic
+- SGL0004 : Localize element is missing NeutralCulture attribute for files: "\<Localize file that is missing the attribute\>".
+
+**Neutral culture** is no longer assumed but needs to be specified via the `NeutralCulture` attribute.
 
 ### From version 1.0
 

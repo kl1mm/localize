@@ -38,7 +38,8 @@ namespace kli.Localize.Generator.Internal.Helper
 
         public string ResolveNamespace()
         {
-            if (optionsProvider.GetOptions(originFile).TryGetValue($"build_metadata.{LocalizePropertyName}.{MetaDataNamespaceName}", out var namespaceName) && !string.IsNullOrWhiteSpace(namespaceName))
+            if (optionsProvider.GetOptions(originFile).TryGetValue($"build_metadata.{LocalizePropertyName}.{MetaDataNamespaceName}", out var namespaceName) 
+                && !string.IsNullOrWhiteSpace(namespaceName))
                 return namespaceName;
 
             if (!optionsProvider.GlobalOptions.TryGetValue($"build_property.{PropertyRootNamespace}", out var rootNamespace))

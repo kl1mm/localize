@@ -5,6 +5,7 @@
     <File Path=".gitignore" />
     <File Path="README.md" />
     <File Path="version.json" />
+    <File Path="CHANGELOG.md" />
   </Folder>
   <Project Path="example/kli.Localize.Example/kli.Localize.Example.csproj" />
   <Project Path="src/kli.Localize.Generator/kli.Localize.Generator.csproj" />
