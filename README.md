@@ -157,7 +157,7 @@ The namespace is generated using the following pattern:
 
 This behaviour can be overridden with the `NamespaceName` attribute on the `Localize` element.
 
-### ClassName
+### Class naming
 
 The default class name in the generated code is `Locale`.
 
