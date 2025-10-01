@@ -10,7 +10,7 @@ The json files are no longer specified via `AdditionalFiles` but rather via `Loc
     <ItemGroup>
         <PackageReference Include="kli.Localize" Version="2.0.*" />
 
-        <Localize Include="Localizations\Locale_de.json" 
+        <Localize Include="Localizations\Locale_*.json" 
                          NamespaceName="Namespace.Of.Your.Choice"
                          ClassName="MyClassName"
                          NeutralCulture="de" />
@@ -22,6 +22,9 @@ The json files are no longer specified via `AdditionalFiles` but rather via `Loc
 - SGL0004 : Localize element is missing NeutralCulture attribute for files: "\<Localize file that is missing the attribute\>".
 
 **Neutral culture** is no longer assumed but needs to be specified via the `NeutralCulture` attribute.
+This also means from now on, every file needs a culture postfix.
+So the "neutral culture" file has to be postfixed accordingly (`_<your_neutralculture>.json`).
+
 
 ### From version 1.0
 
