@@ -22,7 +22,7 @@ namespace kli.Localize.Generator.Internal.Helper
         {
             optionsProvider.GetOptions(originFile)
                 .TryGetValue($"build_metadata.{LocalizePropertyName}.{MetaDataNeutralCulture}", out var neutralCulture);
-            return neutralCulture; //TODO: diagnostic error if not given?
+            return neutralCulture; 
         }
         public string ResolveGeneratedClassName()
         {

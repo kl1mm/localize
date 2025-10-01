@@ -22,7 +22,6 @@
 
         <Localize Include="TestLocalizations\Locale_*.json" NamespaceName="kli.Locales" ClassName="MyLocale" NeutralCulture="de" />
         <Localize Include="TestLocalizations\StructuredLocale_*.json" NeutralCulture="de"/> 
-        <!-- TODO: show warning or better error? --> 
     </ItemGroup>
 
     <Import Project="..\kli.Localize.Generator\kli.Localize.props" />
