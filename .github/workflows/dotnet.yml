@@ -12,13 +12,13 @@ jobs:
     
     steps:
     - name: Checkout source
-      uses: actions/checkout@v4.1.7
+      uses: actions/checkout@v7.0.0
       with:
-        fetch-depth: 0    
+        fetch-depth: 0
     - name: Setup .NET
-      uses: actions/setup-dotnet@v4.0.1
+      uses: actions/setup-dotnet@v5.4.0
       with:
-        dotnet-version: '9.0.x'
+        dotnet-version: '10.0.x'
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
@@ -26,7 +26,7 @@ jobs:
     - name: Test
       run: dotnet test --no-build -c Release --verbosity normal
     - name: Upload artifacts
-      uses: actions/upload-artifact@v4.4.0
+      uses: actions/upload-artifact@v7.0.1
       with:
         name: kli.Localize.v${{ env.GitBuildVersionSimple }}.nupkg
         path: src/kli.Localize.Generator/bin/Release/*.nupkg
@@ -40,7 +40,7 @@ jobs:
     if: ${{ github.ref == 'refs/heads/main' }}
     steps:
     - name: Download artifacts
-      uses: actions/download-artifact@v4.1.8
+      uses: actions/download-artifact@v8.0.1
       with:
         name: kli.Localize.${{ needs.build.outputs.tag }}.nupkg
         path: artifacts
