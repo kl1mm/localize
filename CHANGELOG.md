@@ -2,6 +2,16 @@
 
 ### From version 2.0
 
+#### Added `GetString` on nested sections
+`GetString(key, cultureInfo)` is now also generated on nested section classes and
+resolves the section-prefixed key, so lookups work at every hierarchy level:
+
+```csharp
+MyLocale.Sub.GetString("SubText");
+MyLocale.Sub.DoublyNested.GetString("Something");
+MyLocale.Sub.GetString("DoublyNested::Something");
+```
+
 #### BREAKING - New `Localize` element
 
 The json files are no longer specified via `AdditionalFiles` but rather via `Localize` element.
