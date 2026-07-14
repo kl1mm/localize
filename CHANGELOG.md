@@ -2,6 +2,16 @@
 
 ### From version 2.0
 
+#### Added `GetString` on nested sections
+`GetString(key, cultureInfo)` is now also generated on nested section classes and
+resolves the section-prefixed key, so lookups work at every hierarchy level:
+
+```csharp
+MyLocale.Sub.GetString("SubText");
+MyLocale.Sub.DoublyNested.GetString("Something");
+MyLocale.Sub.GetString("DoublyNested::Something");
+```
+
 #### BREAKING - New `Localize` element
 
 The json files are no longer specified via `AdditionalFiles` but rather via `Localize` element.
@@ -10,7 +20,7 @@ The json files are no longer specified via `AdditionalFiles` but rather via `Loc
     <ItemGroup>
         <PackageReference Include="kli.Localize" Version="2.0.*" />
 
-        <Localize Include="Localizations\Locale_de.json" 
+        <Localize Include="Localizations\Locale_*.json" 
                          NamespaceName="Namespace.Of.Your.Choice"
                          ClassName="MyClassName"
                          NeutralCulture="de" />
@@ -22,6 +32,9 @@ The json files are no longer specified via `AdditionalFiles` but rather via `Loc
 - SGL0004 : Localize element is missing NeutralCulture attribute for files: "\<Localize file that is missing the attribute\>".
 
 **Neutral culture** is no longer assumed but needs to be specified via the `NeutralCulture` attribute.
+This also means from now on, every file needs a culture postfix.
+So the "neutral culture" file has to be postfixed accordingly (`_<your_neutralculture>.json`).
+
 
 ### From version 1.0
 

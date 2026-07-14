@@ -66,8 +66,19 @@ namespace kli.Localize.Generator.Internal
                 .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
                 .AddModifiers(SyntaxFactory.Token(SyntaxKind.StaticKeyword))
                 .WithLeadingTrivia(Trivia.CreateNestedClassHeader(fileName, translationKey))
+                .AddMembers(this.CreateNestedGetStringMethod(translationKey))
                 .AddMembers(this.ProjectTranslationsToMemberDeclarations(next, fileName, translationKey));
-        }     
+        }
+
+        private MemberDeclarationSyntax CreateNestedGetStringMethod(string translationSection)
+        {
+            var keyPrefix = StringHelper.Keys.NestedKey(translationSection, string.Empty);
+            var member = $$"""
+                           public static string GetString(string key, CultureInfo cultureInfo = null)
+                               => provider.GetValue("{{keyPrefix}}" + key, cultureInfo ?? CultureInfo.CurrentUICulture);
+                           """;
+            return SyntaxFactory.ParseMemberDeclaration(member);
+        }
         
         private MemberDeclarationSyntax CreateTranslationAccessProperty(string propertyName, string translationKey, string translationValue)
         {

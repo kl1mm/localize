@@ -42,6 +42,14 @@ public class GeneratedCodeTest
     }
     
     [Fact]
+    public void TestGetStringOnNestedSection()
+    {
+        Assert.Equal("Abc", MyLocale.Sub.GetString("SubText"));
+        Assert.Equal("Something", MyLocale.Sub.DoublyNested.GetString("Something"));
+        Assert.Equal("Something", MyLocale.Sub.GetString("DoublyNested::Something"));
+    }
+
+    [Fact]
     public void TestGetAll()
     {
         Assert.Equal(6, MyLocale.GetAll().Count);
