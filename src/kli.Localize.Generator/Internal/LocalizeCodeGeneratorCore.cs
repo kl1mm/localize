@@ -77,7 +77,8 @@ namespace kli.Localize.Generator.Internal
                            public static string GetString(string key, CultureInfo cultureInfo = null)
                                => provider.GetValue("{{keyPrefix}}" + key, cultureInfo ?? CultureInfo.CurrentUICulture);
                            """;
-            return SyntaxFactory.ParseMemberDeclaration(member);
+            return SyntaxFactory.ParseMemberDeclaration(member)
+                .WithLeadingTrivia(Trivia.CreateGetStringDocCommentTrivia());
         }
         
         private MemberDeclarationSyntax CreateTranslationAccessProperty(string propertyName, string translationKey, string translationValue)
